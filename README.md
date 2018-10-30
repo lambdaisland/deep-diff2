@@ -10,6 +10,8 @@ Recursively compare Clojure data structures, and produce a colorized diff of the
 
 ## Use
 
+- [API docs](https://cljdoc.org/d/lambdaisland/deep-diff/CURRENT)
+
 ``` clojure
 (require '[lambdaisland.deep-diff :as ddiff])
 
