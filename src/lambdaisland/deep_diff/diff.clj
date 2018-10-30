@@ -116,7 +116,7 @@
            (assoc (->Deletion k) (exp k))
 
            (not (contains? del idx))
-           (assoc k (diff (exp k) (act k)))
+           (assoc k (diff (get exp k) (get act k)))
 
            (contains? ins idx)
            (into (map (juxt ->Insertion act)) (get ins idx)))
