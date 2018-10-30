@@ -2,3 +2,5 @@
 .nrepl-port
 target
 repl
+bin
+scratch.clj

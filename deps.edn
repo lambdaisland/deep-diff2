@@ -1,4 +1,4 @@
-{:paths ["src" "test" "resources"]
+{:paths ["src" "test"]
  :deps  {org.clojure/clojure {:mvn/version "1.9.0"}
          mvxcvi/puget        {:mvn/version "1.0.2"}
          tech.droit/clj-diff {:mvn/version "1.0.0"}
