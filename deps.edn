@@ -1,5 +1,5 @@
 {:paths ["src" "test" "resources"]
- :deps  {org.clojure/clojure {:mvn/version "1.10.0-RC1"}
+ :deps  {org.clojure/clojure {:mvn/version "1.9.0"}
          mvxcvi/puget        {:mvn/version "1.0.2"}
          tech.droit/clj-diff {:mvn/version "1.0.0"}
          mvxcvi/arrangement  {:mvn/version "1.1.1"}}

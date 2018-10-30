@@ -6,28 +6,34 @@
             [clojure.test.check.properties :as prop]
             [lambdaisland.deep-diff.diff :as diff]))
 
-(defmacro ^{:style/indent [1]} context [& args] `(testing ~@args))
+(doseq [v [#'diff/diff-seq
+           #'diff/diff-seq-replacements
+           #'diff/diff-seq-insertions
+           #'diff/diff-seq-deletions
+           #'diff/replacements
+           #'diff/del+ins]]
+  (alter-meta! v dissoc :private))
 
 (deftest diff-test
   (testing "diffing atoms"
-    (context "nil"
+    (testing "nil"
       (is (= (diff/->Mismatch nil 1)
              (diff/diff nil 1))))
 
-    (context "when different"
+    (testing "when different"
       (is (= (diff/->Mismatch :a :b)
              (diff/diff :a :b))))
 
-    (context "when equal"
+    (testing "when equal"
       (is (= :a
              (diff/diff :a :a)))))
 
   (testing "diffing collections"
-    (context "different types"
+    (testing "different types"
       (is (= (diff/->Mismatch [1 2 3] #{1 2 3})
              (diff/diff [1 2 3] #{1 2 3}))))
 
-    (context "sequences"
+    (testing "sequences"
       (is (= []
              (diff/diff [] [])))
 
@@ -64,7 +70,7 @@
       (is (= [0 (diff/->Deletion 1) (diff/->Mismatch 2 :x) (diff/->Insertion :y) (diff/->Insertion :z)]
              (diff/diff [0 1 2] [0 :x :y :z]))))
 
-    (context "sets"
+    (testing "sets"
       (is (= #{:a}
              (diff/diff #{:a} #{:a})))
 
@@ -77,7 +83,7 @@
       (is (= #{(diff/->Deletion :a) :b :c}
              (diff/diff #{:a :b :c} #{:c :b}))))
 
-    (context "maps"
+    (testing "maps"
       (is (= {} (diff/diff {} {})))
 
       (is (= {:a (diff/->Mismatch 1 2)}
@@ -92,16 +98,16 @@
       (is (= {:a [1 (diff/->Deletion 2) 3]}
              (diff/diff {:a [1 2 3]} {:a [1 3]})))))
 
-  (is (= [{:x (lambdaisland.deep-diff.diff/->Mismatch 1 2)}]
+  (is (= [{:x (diff/->Mismatch 1 2)}]
          (diff/diff [{:x 1}] [{:x 2}])))
 
-  (is (= [(lambdaisland.deep-diff.diff/->Mismatch 0 [[]]) (lambdaisland.deep-diff.diff/->Mismatch 0 [])]
+  (is (= [(diff/->Mismatch 0 [[]]) (diff/->Mismatch 0 [])]
          (diff/diff [0 0] [[[]] []])))
 
-  (is (= [(lambdaisland.deep-diff.diff/->Mismatch 0 []) (lambdaisland.deep-diff.diff/->Deletion 0)]
+  (is (= [(diff/->Mismatch 0 []) (diff/->Deletion 0)]
          (diff/diff [0 0] [[]])))
 
-  (is (= [(lambdaisland.deep-diff.diff/->Mismatch 0 false)]
+  (is (= [(diff/->Mismatch 0 false)]
          (diff/diff [0] [false]))))
 
 (deftest undiff-test
@@ -196,50 +202,58 @@
                 (let [diff (diff/diff x y)]
                   (= [x y] [(diff/left-undiff diff) (diff/right-undiff diff)]))))
 
+
 (deftest diff-seq-test
-  (is (= [(lambdaisland.deep-diff.diff/->Insertion 1) 2 (lambdaisland.deep-diff.diff/->Insertion 3)]
+  (is (= [(diff/->Insertion 1) 2 (diff/->Insertion 3)]
          (diff/diff-seq [2]  [1 2 3])))
 
-  (is (= [(lambdaisland.deep-diff.diff/->Insertion 1) 2 (lambdaisland.deep-diff.diff/->Insertion 3) 4 (lambdaisland.deep-diff.diff/->Insertion 5)]
+  (is (= [(diff/->Insertion 1) 2 (diff/->Insertion 3) 4 (diff/->Insertion 5)]
          (diff/diff-seq [2 4]  [1 2 3 4 5])))
 
-  (is (= [(lambdaisland.deep-diff.diff/->Insertion -1) (lambdaisland.deep-diff.diff/->Insertion 1) true (lambdaisland.deep-diff.diff/->Deletion 0)]
+  (is (= [(diff/->Insertion -1) (diff/->Insertion 1) true (diff/->Deletion 0)]
          (diff/diff-seq [true 0] [-1 1 true])))
 
-  (is (= [1 (lambdaisland.deep-diff.diff/->Mismatch 2 3) 3 4]
+  (is (= [1 (diff/->Mismatch 2 3) 3 4]
          (diff/diff-seq-replacements {1 3} [1 2 3 4])))
 
-  (is (= [1 (lambdaisland.deep-diff.diff/->Deletion 2) 3 4]
+  (is (= [1 (diff/->Deletion 2) 3 4]
          (diff/diff-seq-deletions #{1} [1 2 3 4])))
 
-  (is (= [1 (lambdaisland.deep-diff.diff/->Mismatch 2 :x) (lambdaisland.deep-diff.diff/->Insertion :y)]
+  (is (= [1 (diff/->Mismatch 2 :x) (diff/->Insertion :y)]
          (diff/diff-seq [1 2] [1 :x :y])))
 
-  (is (= [(lambdaisland.deep-diff.diff/->Mismatch 0 false)]
+  (is (= [(diff/->Mismatch 0 false)]
          (->> [0]
               (diff/diff-seq-replacements {0 false}))))
 
-  (is (= [(lambdaisland.deep-diff.diff/->Insertion :y) (lambdaisland.deep-diff.diff/->Mismatch 1 :x) (lambdaisland.deep-diff.diff/->Deletion 2)]
+  (is (= [(diff/->Insertion :y) (diff/->Mismatch 1 :x) (diff/->Deletion 2)]
          (->> [1 2]
               (diff/diff-seq-replacements {0 :x})
               (diff/diff-seq-deletions #{1})
               (diff/diff-seq-insertions {-1 [:y]}))))
 
-  (is (= [1 2 (lambdaisland.deep-diff.diff/->Insertion :x) (lambdaisland.deep-diff.diff/->Insertion :y) 3 4]
+  (is (= [1 2 (diff/->Insertion :x) (diff/->Insertion :y) 3 4]
          (diff/diff-seq-insertions {1 [:x :y]} [1 2 3 4])))
 
-  (is (= [(lambdaisland.deep-diff.diff/->Insertion -1) (lambdaisland.deep-diff.diff/->Insertion 1) true (lambdaisland.deep-diff.diff/->Mismatch 0 4) (lambdaisland.deep-diff.diff/->Insertion 5)]
+  (is (= [(diff/->Insertion -1)
+          (diff/->Insertion 1)
+          true
+          (diff/->Mismatch 0 4)
+          (diff/->Insertion 5)]
          (->> [true 0]
               (diff/diff-seq-replacements {1 4})
               (diff/diff-seq-deletions #{})
               (diff/diff-seq-insertions {-1 [-1 1] 3 [5]}))))
 
 
-  (is (= [(lambdaisland.deep-diff.diff/->Insertion -1) (lambdaisland.deep-diff.diff/->Insertion 1) true (lambdaisland.deep-diff.diff/->Deletion 0)]
+  (is (= [(diff/->Insertion -1)
+          (diff/->Insertion 1)
+          true
+          (diff/->Deletion 0)]
          (diff/diff-seq [true 0] [-1 1 true])))
 
 
-  (is (= [:a (lambdaisland.deep-diff.diff/->Deletion :b) :c (lambdaisland.deep-diff.diff/->Insertion :d)]
+  (is (= [:a (diff/->Deletion :b) :c (diff/->Insertion :d)]
          (diff/diff-seq [:a :b :c] [:a :c :d]))))
 
 

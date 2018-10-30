@@ -16,14 +16,14 @@
   (left-undiff [x])
   (right-undiff [x]))
 
-(defn shift-insertions [ins]
+(defn- shift-insertions [ins]
   (reduce (fn [res idx]
             (let [offset (apply + (map count (vals res)))]
               (assoc res (+ idx offset) (get ins idx))))
           {}
           (sort (keys ins))))
 
-(defn replacements
+(defn- replacements
   "Given a set of deletion indexes and a map of insertion index to value sequence,
   match up deletions and insertions into replacements, returning a map of
   replacements, a set of deletions, and a map of insertions."
@@ -58,7 +58,7 @@
                      (remove (comp nil? val))
                      (shift-insertions ins))])))
 
-(defn del+ins
+(defn- del+ins
   "Wrapper around clj-diff that returns deletions and insertions as a set and map
   respectively."
   [exp act]
@@ -66,7 +66,7 @@
     [(into #{} del)
      (into {} (map (fn [[k & vs]] [k (vec vs)])) ins)]))
 
-(defn diff-seq-replacements [replacements s]
+(defn- diff-seq-replacements [replacements s]
   (map-indexed
    (fn [idx v]
      (if (contains? replacements idx)
@@ -74,7 +74,7 @@
        v))
    s))
 
-(defn diff-seq-deletions [del s]
+(defn- diff-seq-deletions [del s]
   (map
    (fn [v idx]
      (if (contains? del idx)
@@ -83,13 +83,13 @@
    s
    (range)))
 
-(defn diff-seq-insertions [ins s]
+(defn- diff-seq-insertions [ins s]
   (reduce (fn [res [idx vs]]
             (concat (take (inc idx) res) (map ->Insertion vs) (drop (inc idx) res)))
           s
           ins))
 
-(defn diff-seq [exp act]
+(defn- diff-seq [exp act]
   (let [[rep del ins] (replacements (del+ins exp act))]
     (->> exp
          (diff-seq-replacements rep)
@@ -97,13 +97,13 @@
          (diff-seq-insertions ins)
          (into []))))
 
-(defn val-type [val]
+(defn- val-type [val]
   (let [t (type val)]
     (if (class? t)
       (symbol (.getName t))
       t)))
 
-(defn diff-map [exp act]
+(defn- diff-map [exp act]
   (first
    (let [exp-ks (keys exp)
          act-ks (concat (filter (set (keys act)) exp-ks)
@@ -126,7 +126,7 @@
          {}) 0]
       exp-ks))))
 
-(defn diff-atom [exp act]
+(defn- diff-atom [exp act]
   (if (= exp act)
     exp
     (->Mismatch exp act)))
