@@ -7,22 +7,22 @@
             [arrangement.core]
             [lambdaisland.deep-diff.diff :as diff]))
 
-(defn- print-deletion [printer expr]
+(defn print-deletion [printer expr]
   (let [no-color (assoc printer :print-color false)]
     (color/document printer ::deletion [:span "-" (puget/format-doc no-color (:- expr))])))
 
-(defn- print-insertion [printer expr]
+(defn print-insertion [printer expr]
   (let [no-color (assoc printer :print-color false)]
     (color/document printer ::insertion [:span "+" (puget/format-doc no-color (:+ expr))])))
 
-(defn- print-mismatch [printer expr]
+(defn print-mismatch [printer expr]
   [:group
    [:span ""] ;; needed here to make this :nest properly in kaocha.report/print-expr '=
    [:align
     (print-deletion printer expr) :line
     (print-insertion printer expr)]])
 
-(defn- print-other [printer expr]
+(defn print-other [printer expr]
   (let [no-color (assoc printer :print-color false)]
     (color/document printer ::other [:span "-" (puget/format-doc no-color expr)])))
 

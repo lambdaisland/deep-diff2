@@ -1,10 +1,9 @@
 # Unreleased
 
-## Added
-
-## Fixed
-
 ## Changed
+
+- `lambdaisland.deep-diff.printer/print-*` are now public, as they can be used
+  in custom print handlers.
 
 # 0.0-4 (2018-10-30 / 3d82596)
 
