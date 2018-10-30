@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/clojure:tools-deps
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "deps.edn" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: clojure -A:dev:test -Spath
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "deps.edn" }}
+      - run: clojure -A:dev:test -m kaocha.runner --reporter kaocha.report/documentation
