@@ -1,10 +1,11 @@
 # Unreleased
 
-## Added
-
 ## Fixed
 
-## Changed
+- Fix support for Clojure records. Currently they are considered in the same
+  equality partition as maps. (by [@ikitommi](https://github.com/ikitommi), [#1](https://github.com/lambdaisland/deep-diff/pull/1))
+- Pin explicitly to the latest version of Fipp and rrb-vector, to prevent issues
+  on Java 11, see [CRRBV-18](https://dev.clojure.org/jira/browse/CRRBV-18)
 
 # 0.0-8 (2018-10-30 / 6bd7918)
 
