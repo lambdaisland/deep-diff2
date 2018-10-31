@@ -5,7 +5,7 @@ jobs:
       - image: circleci/clojure:tools-deps
     steps:
       - checkout
-      - run: mkdir -p ~/test-results/kaocha
+      - run: mkdir -p test-results/kaocha
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "deps.edn" }}
