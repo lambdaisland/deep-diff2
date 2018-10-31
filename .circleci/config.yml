@@ -5,6 +5,7 @@ jobs:
       - image: circleci/clojure:tools-deps
     steps:
       - checkout
+      - run: mkdir -p ~/test-results/kaocha
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "deps.edn" }}
@@ -15,4 +16,6 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "deps.edn" }}
-      - run: clojure -A:dev:test -m kaocha.runner --reporter kaocha.report/documentation
+      - run: clojure -A:dev:test -m kaocha.runner --reporter kaocha.report/documentation --plugin kaocha.plugin/junit-xml --junit-xml-file test-results/kaocha/results.xml
+      - store_test_results:
+        path: test-results

@@ -66,6 +66,8 @@ Pretty printing and colorization are handled by
 This library was originally developed as part of the
 [Kaocha](https://github.com/lambdaisland/kaocha) test runner.
 
+Another library that implements a form of data structure diffing is [editscript](https://github.com/juji-io/editscript).
+
 ## License
 
 Copyright &copy; 2018 Arne Brasseur
