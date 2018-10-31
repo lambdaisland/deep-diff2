@@ -11,5 +11,7 @@
   {}
 
   :test
-  {:extra-deps {lambdaisland/kaocha    {:mvn/version "0.0-217"}
-                org.clojure/test.check {:mvn/version "0.10.0-alpha3"}}}}}
+  {:extra-deps {lambdaisland/kaocha           {:mvn/version "0.0-217"}
+                lambdaisland/kaocha-junit-xml {:git/url "https://github.com/lambdaisland/kaocha-junit-xml.git"
+                                               :sha     "fb06678e9f947cd7ff0deff456e8e6afae687afe"}
+                org.clojure/test.check        {:mvn/version "0.10.0-alpha3"}}}}}
