@@ -36,6 +36,16 @@
       <version>1.0.2</version>
     </dependency>
     <dependency>
+      <groupId>fipp</groupId>
+      <artifactId>fipp</artifactId>
+      <version>0.6.13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>core.rrb-vector</artifactId>
+      <version>0.0.13</version>
+    </dependency>
+    <dependency>
       <groupId>tech.droit</groupId>
       <artifactId>clj-diff</artifactId>
       <version>1.0.0</version>
