@@ -14,7 +14,7 @@
            #'diff/del+ins]]
   (alter-meta! v dissoc :private))
 
-(defrecord ARecord [a])
+(defrecord ARecord [])
 
 (deftest diff-test
   (testing "diffing atoms"
@@ -102,7 +102,9 @@
 
     (testing "records"
       (is (= {:a (diff/->Mismatch 1 2)}
-             (diff/diff (->ARecord 1) (->ARecord 2))))))
+             (diff/diff (map->ARecord {:a 1}) (map->ARecord {:a 2}))))
+      (is (= {(diff/->Insertion :a) 1}
+             (diff/diff (map->ARecord {}) (map->ARecord {:a 1}))))))
 
   (is (= [{:x (diff/->Mismatch 1 2)}]
          (diff/diff [{:x 1}] [{:x 2}])))

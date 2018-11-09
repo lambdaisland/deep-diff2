@@ -119,10 +119,10 @@
            (assoc k (diff (get exp k) (get act k)))
 
            (contains? ins idx)
-           (into (map (juxt ->Insertion act)) (get ins idx)))
+           (into (map (juxt ->Insertion (partial get act))) (get ins idx)))
          (inc idx)])
       [(if (contains? ins -1)
-         (into {} (map (juxt ->Insertion act)) (get ins -1))
+         (into {} (map (juxt ->Insertion (partial get act))) (get ins -1))
          {}) 0]
       exp-ks))))
 
