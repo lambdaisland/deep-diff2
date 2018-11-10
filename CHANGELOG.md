@@ -1,10 +1,16 @@
 # Unreleased
 
-## Added
-
 ## Fixed
 
+- Fix support for records with inserts [#4](https://github.com/lambdaisland/deep-diff/pull/4)
+
 ## Changed
+
+- Version upgrades:
+- mvxcvi/puget {:mvn/version "1.0.2"} -> {:mvn/version "1.0.3"}
+- fipp {:mvn/version "0.6.13"} -> {:mvn/version "0.6.14"}
+- lambdaisland/kaocha {:mvn/version "0.0-239"} -> {:mvn/version "0.0-266"}
+- lambdaisland/kaocha-junit-xml {:sha "fb06678e9f947cd7ff0deff456e8e6afae687afe"} -> {:sha "a35398d4bf553bdb09b8ef07f4bf8bd3bd40bc61"}
 
 # 0.0-15 (2018-10-31 / 63d30b5)
 
