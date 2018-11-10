@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>lambdaisland</groupId>
   <artifactId>deep-diff</artifactId>
-  <version>0.0-15</version>
+  <version>0.0-25</version>
   <name>deep-diff</name>
   <description>Recursively diff Clojure data structures.</description>
   <url>https://github.com/lambdaisland/deep-diff</url>
@@ -22,7 +22,7 @@
     <url>https://github.com/lambdaisland/deep-diff</url>
     <connection>scm:git:git://github.com/lambdaisland/deep-diff.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/lambdaisland/deep-diff.git</developerConnection>
-    <tag>f08a2e253a64b3c5a9e3db8493ed24701dcd5771</tag>
+    <tag>b4b8ba3e484cbd90b0bd5b9825b5a7570071a2c3</tag>
   </scm>
   <dependencies>
     <dependency>
@@ -71,7 +71,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Git-Revision>f08a2e253a64b3c5a9e3db8493ed24701dcd5771</Git-Revision>
+              <Git-Revision>b4b8ba3e484cbd90b0bd5b9825b5a7570071a2c3</Git-Revision>
             </manifestEntries>
           </archive>
         </configuration>
