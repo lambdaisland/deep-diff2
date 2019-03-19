@@ -1,5 +1,9 @@
 # lambdaisland/deep-diff
 
+<!-- badges -->
+[![CircleCI](https://circleci.com/gh/lambdaisland/deep-diff.svg?style=svg)](https://circleci.com/gh/lambdaisland/deep-diff) [![cljdoc badge](https://cljdoc.org/badge/lambdaisland/deep-diff)](https://cljdoc.org/d/lambdaisland/deep-diff) [![Clojars Project](https://img.shields.io/clojars/v/lambdaisland/deep-diff.svg)](https://clojars.org/lambdaisland/deep-diff) [![codecov](https://codecov.io/gh/lambdaisland/deep-diff/branch/master/graph/badge.svg)](https://codecov.io/gh/lambdaisland/deep-diff)
+<!-- /badges -->
+
 Recursively compare Clojure data structures, and produce a colorized diff of the result.
 
 ![screenshot showing REPL example](screenshot.png)
