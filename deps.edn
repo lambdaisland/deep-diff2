@@ -1,17 +1,15 @@
 {:paths ["src" "test"]
- :deps  {org.clojure/clojure         {:mvn/version "1.9.0"}
-         mvxcvi/puget                {:mvn/version "1.0.3"}
-         fipp                        {:mvn/version "0.6.14"}
-         org.clojure/core.rrb-vector {:mvn/version "0.0.13"}
-         tech.droit/clj-diff         {:mvn/version "1.0.0"}
-         mvxcvi/arrangement          {:mvn/version "1.1.1"}}
+ :deps  {org.clojure/clojure         {:mvn/version "1.10.0"}
+         mvxcvi/puget                {:mvn/version "1.1.1"}
+         fipp                        {:mvn/version "0.6.17"}
+         org.clojure/core.rrb-vector {:mvn/version "0.0.14"}
+         tech.droit/clj-diff         {:mvn/version "1.0.1"}
+         mvxcvi/arrangement          {:mvn/version "1.2.0"}}
 
  :aliases
  {:dev
   {}
 
   :test
-  {:extra-deps {lambdaisland/kaocha           {:mvn/version "0.0-266"}
-                lambdaisland/kaocha-junit-xml {:git/url "https://github.com/lambdaisland/kaocha-junit-xml.git"
-                                               :sha     "a35398d4bf553bdb09b8ef07f4bf8bd3bd40bc61"}
-                org.clojure/test.check        {:mvn/version "0.10.0-alpha3"}}}}}
+  {:extra-deps {lambdaisland/kaocha           {:mvn/version "0.0-389"}
+                org.clojure/test.check        {:mvn/version "0.10.0-alpha4"}}}}}

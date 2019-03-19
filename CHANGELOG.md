@@ -1,10 +1,16 @@
 # Unreleased
 
-## Added
-
 ## Fixed
 
+- Fix issue [diff hangs on nil](https://github.com/lambdaisland/deep-diff/issues/6) (see [upstream issue](https://github.com/droitfintech/clj-diff/issues/3))
+
 ## Changed
+
+- mvxcvi/puget {:mvn/version "1.0.3"} -> {:mvn/version "1.1.1"}
+- fipp {:mvn/version "0.6.14"} -> {:mvn/version "0.6.17"}
+- org.clojure/core.rrb-vector {:mvn/version "0.0.13"} -> {:mvn/version "0.0.14"}
+- tech.droit/clj-diff {:mvn/version "1.0.0"} -> {:mvn/version "1.0.1"}
+- mvxcvi/arrangement {:mvn/version "1.1.1"} -> {:mvn/version "1.2.0"}
 
 # 0.0-25 (2018-11-10 / 2fab8b1)
 
