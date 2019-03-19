@@ -28,32 +28,32 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.9.0</version>
+      <version>1.10.0</version>
     </dependency>
     <dependency>
       <groupId>mvxcvi</groupId>
       <artifactId>puget</artifactId>
-      <version>1.0.3</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>fipp</groupId>
       <artifactId>fipp</artifactId>
-      <version>0.6.14</version>
+      <version>0.6.17</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>core.rrb-vector</artifactId>
-      <version>0.0.13</version>
+      <version>0.0.14</version>
     </dependency>
     <dependency>
       <groupId>tech.droit</groupId>
       <artifactId>clj-diff</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>mvxcvi</groupId>
       <artifactId>arrangement</artifactId>
-      <version>1.1.1</version>
+      <version>1.2.0</version>
     </dependency>
   </dependencies>
   <build>
