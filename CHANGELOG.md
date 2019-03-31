@@ -1,10 +1,8 @@
 # Unreleased
 
-## Added
-
 ## Fixed
 
-## Changed
+- Added type hints to prevent reflective calls
 
 # 0.0-29 (2019-03-19 / 3fb9abc)
 
