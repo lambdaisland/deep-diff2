@@ -75,7 +75,7 @@
             (puget/format-doc printer v)]))))})
 
 (defn- print-handler-resolver [extra-handlers]
-  (fn [klz]
+  (fn [^Class klz]
     (and klz (get (merge @#'print-handlers extra-handlers)
                   (symbol (.getName klz))))))
 
