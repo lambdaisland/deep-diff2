@@ -100,7 +100,7 @@
 (defn- val-type [val]
   (let [t (type val)]
     (if (class? t)
-      (symbol (.getName t))
+      (symbol (.getName ^Class t))
       t)))
 
 (defn- diff-map [exp act]
@@ -143,7 +143,7 @@
 (extend Object
   Diff
   {:diff-similar (fn [exp act]
-                   (if (.isArray (.getClass exp))
+                   (if (.isArray (.getClass ^Object exp))
                      (diff-seq exp act)
                      (diff-atom exp act)))})
 
