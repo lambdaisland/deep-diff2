@@ -19,7 +19,7 @@ Recursively compare Clojure data structures, and produce a colorized diff of the
 ``` clojure
 (require '[lambdaisland.deep-diff :as ddiff])
 
-(pretty-print (diff {:a 1 :b 2} {:a 1 :c 3}))
+(ddiff/pretty-print (ddiff/diff {:a 1 :b 2} {:a 1 :c 3}))
 ```
 
 ### Diffing
@@ -29,7 +29,7 @@ structure that contains markers for insertions, deletions, or mismatches. These
 are records with `-` and `+` fields.
 
 ``` clojure
-(diff {:a 1 :b 2} {:a 1 :b 3})
+(ddiff/diff {:a 1 :b 2} {:a 1 :b 3})
 {:a 1, :b #lambdaisland.deep_diff.diff.Mismatch{:- 2, :+ 3}}
 ```
 
@@ -44,9 +44,9 @@ For fine grained control you can create a custom Puget printer, and supply it to
 `pretty-print`.
 
 ``` clojure
-(def narrow-printer (lambdaisland.deep-diff/printer {:width 10}))
+(def narrow-printer (ddiff/printer {:width 10}))
 
-(pretty-print (diff {:a 1 :b 2} {:a 1 :b 3}) narrow-printer)
+(ddiff/pretty-print (ddiff/diff {:a 1 :b 2} {:a 1 :b 3}) narrow-printer)
 ```
 
 For more advanced uses like incorporating diffs into your own Fipp documents, see `lambdaisland.deep-diff.printer/format-doc`, `lambdaisland.deep-diff.printer/print-doc`.
