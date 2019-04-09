@@ -87,7 +87,10 @@
             (puget/format-doc printer v)]))))
 
    'java.util.Date
-   print-date})
+   print-date
+
+   'java.util.UUID
+   (puget/tagged-handler 'uuid str)})
 
 (defn- print-handler-resolver [extra-handlers]
   (fn [^Class klz]
