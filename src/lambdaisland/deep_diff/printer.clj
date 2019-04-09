@@ -5,7 +5,9 @@
             [puget.dispatch]
             [puget.printer :as puget]
             [arrangement.core]
-            [lambdaisland.deep-diff.diff :as diff]))
+            [lambdaisland.deep-diff.diff :as diff])
+  (:import (java.text SimpleDateFormat)
+           (java.util TimeZone)))
 
 (defn print-deletion [printer expr]
   (let [no-color (assoc printer :print-color false)]
@@ -33,6 +35,16 @@
      (color/document this :delimiter "{")
      [:align (interpose [:span (:map-delimiter this) :line] entries)]
      (color/document this :delimiter "}")]))
+
+(def ^:private thread-local-utc-date-format
+  (proxy [ThreadLocal] []
+    (initialValue []
+      (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
+        (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+
+(def ^:private print-date
+  (puget/tagged-handler 'inst
+                        #(.format (.get thread-local-utc-date-format) %)))
 
 (def ^:private print-handlers
   {'lambdaisland.deep_diff.diff.Deletion
@@ -72,7 +84,10 @@
            [:span
             (puget/format-doc printer k)
             (if (coll? v) (:map-coll-separator printer) " ")
-            (puget/format-doc printer v)]))))})
+            (puget/format-doc printer v)]))))
+
+   'java.util.Date
+   print-date})
 
 (defn- print-handler-resolver [extra-handlers]
   (fn [^Class klz]
