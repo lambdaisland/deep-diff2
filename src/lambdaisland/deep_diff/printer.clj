@@ -7,7 +7,8 @@
             [arrangement.core]
             [lambdaisland.deep-diff.diff :as diff])
   (:import (java.text SimpleDateFormat)
-           (java.util TimeZone)))
+           (java.util TimeZone)
+           (java.sql Timestamp)))
 
 (defn print-deletion [printer expr]
   (let [no-color (assoc printer :print-color false)]
@@ -46,6 +47,18 @@
   (puget/tagged-handler
     'inst
     #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)))
+
+(def ^:private ^ThreadLocal thread-local-utc-timestamp-format
+  (proxy [ThreadLocal] []
+    (initialValue []
+      (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
+        (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+
+(def ^:private print-timestamp
+  (puget/tagged-handler
+    'inst
+    #(str (.format ^SimpleDateFormat (.get thread-local-utc-timestamp-format) %)
+          (format ".%09d-00:00" (.getNanos ^Timestamp %)))))
 
 (def ^:private print-handlers
   {'lambdaisland.deep_diff.diff.Deletion
@@ -89,6 +102,9 @@
 
    'java.util.Date
    print-date
+
+   'java.sql.Timestamp
+   print-timestamp
 
    'java.util.UUID
    (puget/tagged-handler 'uuid str)})
