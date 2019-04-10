@@ -36,15 +36,16 @@
      [:align (interpose [:span (:map-delimiter this) :line] entries)]
      (color/document this :delimiter "}")]))
 
-(def ^:private thread-local-utc-date-format
+(def ^:private ^ThreadLocal thread-local-utc-date-format
   (proxy [ThreadLocal] []
     (initialValue []
       (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
         (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
 
 (def ^:private print-date
-  (puget/tagged-handler 'inst
-                        #(.format (.get thread-local-utc-date-format) %)))
+  (puget/tagged-handler
+    'inst
+    #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)))
 
 (def ^:private print-handlers
   {'lambdaisland.deep_diff.diff.Deletion
