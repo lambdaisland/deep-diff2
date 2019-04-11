@@ -5,7 +5,10 @@
             [puget.dispatch]
             [puget.printer :as puget]
             [arrangement.core]
-            [lambdaisland.deep-diff.diff :as diff]))
+            [lambdaisland.deep-diff.diff :as diff])
+  (:import (java.text SimpleDateFormat)
+           (java.util TimeZone)
+           (java.sql Timestamp)))
 
 (defn print-deletion [printer expr]
   (let [no-color (assoc printer :print-color false)]
@@ -33,6 +36,38 @@
      (color/document this :delimiter "{")
      [:align (interpose [:span (:map-delimiter this) :line] entries)]
      (color/document this :delimiter "}")]))
+
+(def ^:private ^ThreadLocal thread-local-utc-date-format
+  (proxy [ThreadLocal] []
+    (initialValue []
+      (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
+        (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+
+(def ^:private print-date
+  (puget/tagged-handler
+    'inst
+    #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)))
+
+(def ^:private ^ThreadLocal thread-local-utc-timestamp-format
+  (proxy [ThreadLocal] []
+    (initialValue []
+      (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
+        (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+
+(def ^:private print-timestamp
+  (puget/tagged-handler
+    'inst
+    #(str (.format ^SimpleDateFormat (.get thread-local-utc-timestamp-format) %)
+          (format ".%09d-00:00" (.getNanos ^Timestamp %)))))
+
+(def ^:private print-calendar
+  (puget/tagged-handler
+    'inst
+    #(let [formatted (format "%1$tFT%1$tT.%1$tL%1$tz" %)
+           offset-minutes (- (.length formatted) 2)]
+       (str (subs formatted 0 offset-minutes)
+            ":"
+            (subs formatted offset-minutes)))))
 
 (def ^:private print-handlers
   {'lambdaisland.deep_diff.diff.Deletion
@@ -72,7 +107,19 @@
            [:span
             (puget/format-doc printer k)
             (if (coll? v) (:map-coll-separator printer) " ")
-            (puget/format-doc printer v)]))))})
+            (puget/format-doc printer v)]))))
+
+   'java.util.Date
+   print-date
+
+   'java.util.GregorianCalendar
+   print-calendar
+
+   'java.sql.Timestamp
+   print-timestamp
+
+   'java.util.UUID
+   (puget/tagged-handler 'uuid str)})
 
 (defn- print-handler-resolver [extra-handlers]
   (fn [^Class klz]
