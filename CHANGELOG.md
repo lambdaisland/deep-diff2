@@ -2,9 +2,11 @@
 
 ## Added
 
-## Fixed
+- Print `#uuid` and `#inst` similarly to how the Clojure printer handles them. This handles `java.util.Date`, `java.util.GregorianCalendar`, `java.sql.Timestamp`, `java.util.UUID`. (by [Nate Smith](https://github.com/nwjsmith))
 
 ## Changed
+
+-  mvxcvi/puget {:mvn/version "1.1.1"} -> {:mvn/version "1.1.2"}
 
 # 0.0-35 (2019-03-31 / 3b2ad04)
 
