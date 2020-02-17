@@ -4,3 +4,9 @@ target
 repl
 bin
 scratch.clj
+/checkouts/
+/target/
+pom.xml
+pom.xml.asc
+*.jar
+*.class
