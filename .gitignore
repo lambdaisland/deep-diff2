@@ -6,6 +6,8 @@ bin
 scratch.clj
 /checkouts/
 /target/
+/.cljs_node_repl/
+/node_modules/
 pom.xml
 pom.xml.asc
 *.jar
