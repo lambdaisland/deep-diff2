@@ -6,9 +6,10 @@
             [puget.printer :as puget]
             [arrangement.core]
             [lambdaisland.deep-diff.diff :as diff])
-  (:import (java.text SimpleDateFormat)
-           (java.util TimeZone)
-           (java.sql Timestamp)))
+  #?(:clj (:import (java.text SimpleDateFormat)
+                   (java.util TimeZone)
+                   (java.sql Timestamp)))
+  )
 
 (defn print-deletion [printer expr]
   (let [no-color (assoc printer :print-color false)]
@@ -40,13 +41,14 @@
 (def ^:private ^ThreadLocal thread-local-utc-date-format
   (proxy [ThreadLocal] []
     (initialValue []
-      (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
-        (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+      #?(:clj (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
+                (.setTimeZone (TimeZone/getTimeZone "GMT")))
+         :cljs (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00"))))))
 
 (def ^:private print-date
   (puget/tagged-handler
-    'inst
-    #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)))
+   'inst
+   #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)))
 
 (def ^:private ^ThreadLocal thread-local-utc-timestamp-format
   (proxy [ThreadLocal] []
@@ -56,18 +58,18 @@
 
 (def ^:private print-timestamp
   (puget/tagged-handler
-    'inst
-    #(str (.format ^SimpleDateFormat (.get thread-local-utc-timestamp-format) %)
-          (format ".%09d-00:00" (.getNanos ^Timestamp %)))))
+   'inst
+   #(str (.format ^SimpleDateFormat (.get thread-local-utc-timestamp-format) %)
+         (format ".%09d-00:00" (.getNanos ^Timestamp %)))))
 
 (def ^:private print-calendar
   (puget/tagged-handler
-    'inst
-    #(let [formatted (format "%1$tFT%1$tT.%1$tL%1$tz" %)
-           offset-minutes (- (.length formatted) 2)]
-       (str (subs formatted 0 offset-minutes)
-            ":"
-            (subs formatted offset-minutes)))))
+   'inst
+   #(let [formatted (format "%1$tFT%1$tT.%1$tL%1$tz" %)
+          offset-minutes (- (.length formatted) 2)]
+      (str (subs formatted 0 offset-minutes)
+           ":"
+           (subs formatted offset-minutes)))))
 
 (def ^:private print-handlers
   {'lambdaisland.deep_diff.diff.Deletion
