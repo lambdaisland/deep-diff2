@@ -5,11 +5,14 @@
             [puget.dispatch]
             [puget.printer :as puget]
             [arrangement.core]
-            [lambdaisland.deep-diff.diff :as diff])
+            [lambdaisland.deep-diff.diff :as diff]
+            #?@(:cljs
+                [[cljs-time.coerce :refer [from-date]]
+                 [cljs-time.format :refer [formatter unparse]]
+                 [goog.object :as gobj]]))
   #?(:clj (:import (java.text SimpleDateFormat)
                    (java.util TimeZone)
-                   (java.sql Timestamp)))
-  )
+                   (java.sql Timestamp))))
 
 (defn print-deletion [printer expr]
   (let [no-color (assoc printer :print-color false)]
@@ -48,19 +51,28 @@
 (def ^:private print-date
   (puget/tagged-handler
    'inst
-   #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)))
+   #?(:clj #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)
+      :cljs (fun [input-date]
+                 (let [dt (from-date input-date)]
+                   (cljs-time.format/unparse thread-local-utc-date-format dt))))))
 
 (def ^:private ^ThreadLocal thread-local-utc-timestamp-format
   (proxy [ThreadLocal] []
     (initialValue []
-      (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
-        (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+      ;; (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
+      ;;   (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+      #?(:clj (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
+                (.setTimeZone (TimeZone/getTimeZone "GMT")))
+         :cljs (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss"))))))
 
 (def ^:private print-timestamp
   (puget/tagged-handler
    'inst
-   #(str (.format ^SimpleDateFormat (.get thread-local-utc-timestamp-format) %)
-         (format ".%09d-00:00" (.getNanos ^Timestamp %)))))
+   #?(:clj #(str (.format ^SimpleDateFormat (.get thread-local-utc-timestamp-format) %)
+                 (format ".%09d-00:00" (.getNanos ^Timestamp %)))
+      :cljs (fn [input-date]
+              (let [dt (from-date input-date)]
+                (cljs-time.format/unparse thread-local-utc-timestamp-format dt))))))
 
 (def ^:private print-calendar
   (puget/tagged-handler
@@ -81,13 +93,16 @@
    'lambdaisland.deep_diff.diff.Mismatch
    print-mismatch
 
-   'clojure.lang.PersistentArrayMap
+   #?(:clj 'clojure.lang.PersistentArrayMap
+      :cljs 'cljs.core/PersistentArrayMap)
    map-handler
 
-   'clojure.lang.PersistentHashMap
+   #?(:clj 'clojure.lang.PersistentHashMap
+      :cljs cljs.core/PersistentHashMap)
    map-handler
 
-   'clojure.lang.MapEntry
+   #?(:clj 'clojure.lang.MapEntry
+      :cljs 'cljs.core/MapEntry)
    (fn [printer value]
      (let [k (key value)
            v (val value)]
@@ -111,17 +126,19 @@
             (if (coll? v) (:map-coll-separator printer) " ")
             (puget/format-doc printer v)]))))
 
-   'java.util.Date
+   #?(:clj 'java.util.Date
+      :cljs 'js/Date)
    print-date
 
-   'java.util.GregorianCalendar
-   print-calendar
+   ;; 'java.util.GregorianCalendar
+   ;; print-calendar
 
-   'java.sql.Timestamp
-   print-timestamp
+   ;; 'java.sql.Timestamp
+   ;; print-timestamp
 
-   'java.util.UUID
-   (puget/tagged-handler 'uuid str)})
+   #?(:clj java.util.UUID
+       :cljs uuid?)
+    (tagged-handler 'uuid str)}
 
 (defn- print-handler-resolver [extra-handlers]
   (fn [^Class klz]
