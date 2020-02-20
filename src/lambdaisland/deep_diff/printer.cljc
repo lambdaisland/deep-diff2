@@ -72,7 +72,7 @@
                  (format ".%09d-00:00" (.getNanos ^Timestamp %)))
       :cljs (fn [input-date]
               (let [dt (from-date input-date)]
-                (cljs-time.format/unparse thread-local-utc-timestamp-format dt))))))
+                (cljs-time.format/unparse thread-local-utc-timestamp-format dt)))))) ;;TODO format ".%09d-00:00"
 
 (def ^:private print-calendar
   (puget/tagged-handler
@@ -136,8 +136,8 @@
    ;; 'java.sql.Timestamp
    ;; print-timestamp
 
-   #?(:clj java.util.UUID
-       :cljs uuid?)
+   #?(:clj 'java.util.UUID
+       :cljs 'cljs.core.uuid)
     (tagged-handler 'uuid str)}
 
 (defn- print-handler-resolver [extra-handlers]
