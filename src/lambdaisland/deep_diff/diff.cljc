@@ -97,11 +97,11 @@
          (diff-seq-insertions ins)
          (into []))))
 
-(defn- val-type [val]
+#?(:clj (defn- val-type [val]
   (let [t (type val)]
     (if (class? t)
       (symbol (.getName ^Class t))
-      t)))
+      t))))
 
 (defn- diff-map [exp act]
   (first
@@ -136,41 +136,56 @@
     (diff-similar exp act)
     (diff-atom exp act)))
 
-(extend nil
-  Diff
-  {:diff-similar diff-atom})
+#?(:clj (extend nil
+          Diff
+          {:diff-similar diff-atom})
+   :cljs (extend-type nil ;; I am not pretty sure about this. Lets wait for unit tests
+           Diff
+           {:diff-similar diff-atom}))
 
-(extend Object
-  Diff
-  {:diff-similar (fn [exp act]
-                   (if (.isArray (.getClass ^Object exp))
-                     (diff-seq exp act)
-                     (diff-atom exp act)))})
+#?(:clj (extend Object
+          Diff
+          {:diff-similar (fn [exp act]
+                           (if (.isArray (.getClass ^Object exp))
+                             (diff-seq exp act)
+                             (diff-atom exp act)))})
+   :cljs (extend-type object
+           Diff
+           {:diff-similar (fn [exp act]
+                            (if (array?  exp)
+                              (diff-seq exp act)
+                              (diff-atom exp act)))}))
 
 (extend-protocol Diff
-  java.util.List
+  #?(:clj java.util.List
+     :cljs cljs.core.list)
   (diff-similar [exp act] (diff-seq exp act))
 
-  java.util.Set
+  #?(:clj java.util.Set
+     :cljs cljs.core.set)
   (diff-similar [exp act]
     (let [exp-seq (seq exp)
           act-seq (seq act)]
       (set (diff-seq exp-seq (concat (filter act exp-seq)
                                      (remove exp act-seq))))))
 
-  java.util.Map
+  #?(:clj java.util.Map
+     :cljs cljs.core.map)
   (diff-similar [exp act] (diff-map exp act)))
 
 (extend-protocol Undiff
-  java.util.List
+  #?(:clj java.util.List
+     :cljs cljs.core.list)
   (left-undiff [s] (map left-undiff (remove #(instance? Insertion %) s)))
   (right-undiff [s] (map right-undiff (remove #(instance? Deletion %) s)))
 
-  java.util.Set
+  #?(:clj java.util.Set
+     :cljs cljs.core.set)
   (left-undiff [s] (set (left-undiff (seq s))))
   (right-undiff [s] (set (right-undiff (seq s))))
 
-  java.util.Map
+  #?(:clj java.util.Map
+     :cljs cljs.core.map)
   (left-undiff [m]
     (into {}
           (comp (remove #(instance? Insertion (key %)))
@@ -192,5 +207,8 @@
   Deletion
   (left-undiff [m] (get m :-)))
 
-(extend nil Undiff {:left-undiff identity :right-undiff identity})
-(extend Object Undiff {:left-undiff identity :right-undiff identity})
+#?(:clj (extend nil Undiff {:left-undiff identity :right-undiff identity})
+   :cljs (extend-type nil Undiff {:left-undiff identity :right-undiff identity}))
+
+$?(:clj (extend Object Undiff {:left-undiff identity :right-undiff identity})
+        :cljs (extend-type object Undiff {:left-undiff identity :right-undiff identity}))

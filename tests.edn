@@ -1,7 +1,4 @@
 #kaocha/v1
-{:tests [{:id :unit
-          :test-paths ["test"]
-          :source-paths ["src"]}
+{:tests [{:id :clj}
          {:id :cljs
-          :type :kaocha.type/cljs
-          :test-paths ["test"]}]}
+          :type :kaocha.type/cljs}]}

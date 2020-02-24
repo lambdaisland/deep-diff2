@@ -59,8 +59,6 @@
 (def ^:private ^ThreadLocal thread-local-utc-timestamp-format
   (proxy [ThreadLocal] []
     (initialValue []
-      ;; (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
-      ;;   (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
       #?(:clj (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
                 (.setTimeZone (TimeZone/getTimeZone "GMT")))
          :cljs (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss"))))))
@@ -138,7 +136,7 @@
 
    #?(:clj 'java.util.UUID
        :cljs 'cljs.core.uuid)
-    (tagged-handler 'uuid str)}
+    (tagged-handler 'uuid str)})
 
 (defn- print-handler-resolver [extra-handlers]
   (fn [^Class klz]

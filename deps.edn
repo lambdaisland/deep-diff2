@@ -1,9 +1,8 @@
 {:paths ["resources" "src" "test"]
  :deps  {org.clojure/clojure           {:mvn/version "1.10.0"}
          ;;mvxcvi/puget                {:mvn/version "1.1.2"}
-         github-lambdaisland/puget
-         {:git/url "https://github.com/lambdaisland/puget"
-          :sha "ea860be1f0c6a5e406c45a414802c41e902d010c"}
+         github-lambdaisland/puget     {:git/url "https://github.com/lambdaisland/puget"
+                                        :sha "ea860be1f0c6a5e406c45a414802c41e902d010c"}
          fipp                          {:mvn/version "0.6.17"}
          org.clojure/core.rrb-vector   {:mvn/version "0.0.14"}
          ;;tech.droit/clj-diff         {:mvn/version "1.0.1"}
@@ -11,14 +10,13 @@
          mvxcvi/arrangement            {:mvn/version "1.2.0"}
          com.andrewmcveigh/cljs-time   {:mvn/version "0.5.2"}}
 
- :aliases
- {:cljs
-  {:extra-deps {org.clojure/clojurescript   {:mvn/version "1.10.597"}}}
+ :aliases {:cljs
+           {:extra-deps {org.clojure/clojurescript   {:mvn/version "1.10.597"}}}
 
-  :dev
-  {}
+           :dev
+           {}
 
-  :test
-  {:extra-deps {lambdaisland/kaocha      {:mvn/version "0.0-581"}
-                lambdaisland/kaocha-cljs {:mvn/version "0.0-68"}
-                org.clojure/test.check   {:mvn/version "0.10.0-alpha4"}}}}}
+           :test
+           {:extra-deps {lambdaisland/kaocha      {:mvn/version "RELEASE"}
+                         lambdaisland/kaocha-cljs {:mvn/version "RELEASE"}
+                         org.clojure/test.check   {:mvn/version "0.10.0-alpha4"}}}}}
