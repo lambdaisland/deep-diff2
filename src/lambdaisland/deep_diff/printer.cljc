@@ -14,6 +14,18 @@
                    (java.util TimeZone)
                    (java.sql Timestamp))))
 
+(defn get-type-name
+  "Get the type of the given object as a string. For Clojure, gets the name of
+  the class of the object. For ClojureScript, gets either the `name` attribute
+  or the protocol name if the `name` attribute doesn't exist."
+  [x]
+  #?(:clj (.getName (class x))
+     :cljs (let [t (type x)
+                 n (.-name t)]
+             (if (empty? n)
+               (pr-str t)
+               n))))
+
 (defn print-deletion [printer expr]
   (let [no-color (assoc printer :print-color false)]
     (color/document printer ::deletion [:span "-" (puget/format-doc no-color (:- expr))])))
@@ -40,6 +52,29 @@
      (color/document this :delimiter "{")
      [:align (interpose [:span (:map-delimiter this) :line] entries)]
      (color/document this :delimiter "}")]))
+
+(defn- map-entry-handler [printer value]
+  (let [k (key value)
+        v (val value)]
+    (let [no-color (assoc printer :print-color false)]
+      (cond
+        (instance? lambdaisland.deep_diff.diff.Insertion k)
+        [:span
+         (print-insertion printer k)
+         (if (coll? v) (:map-coll-separator printer) " ")
+         (color/document printer ::insertion (puget/format-doc no-color v))]
+
+        (instance? lambdaisland.deep_diff.diff.Deletion k)
+        [:span
+         (print-deletion printer k)
+         (if (coll? v) (:map-coll-separator printer) " ")
+         (color/document printer ::deletion (puget/format-doc no-color v))]
+
+        :else
+        [:span
+         (puget/format-doc printer k)
+         (if (coll? v) (:map-coll-separator printer) " ")
+         (puget/format-doc printer v)]))))
 
 (def ^:private ^ThreadLocal thread-local-utc-date-format
   (proxy [ThreadLocal] []
@@ -70,7 +105,7 @@
                  (format ".%09d-00:00" (.getNanos ^Timestamp %)))
       :cljs (fn [input-date]
               (let [dt (from-date input-date)]
-                (cljs-time.format/unparse thread-local-utc-timestamp-format dt)))))) ;;TODO format ".%09d-00:00"
+                (cljs-time.format/unparse thread-local-utc-timestamp-format dt))))))
 
 (def ^:private print-calendar
   (puget/tagged-handler
@@ -81,7 +116,7 @@
            ":"
            (subs formatted offset-minutes)))))
 
-(def ^:private print-handlers
+(def ^:private common-handlers
   {'lambdaisland.deep_diff.diff.Deletion
    print-deletion
 
@@ -89,67 +124,57 @@
    print-insertion
 
    'lambdaisland.deep_diff.diff.Mismatch
-   print-mismatch
+   print-mismatch})
 
-   #?(:clj 'clojure.lang.PersistentArrayMap
-      :cljs 'cljs.core/PersistentArrayMap)
-   map-handler
+#?(:clj
+   (def ^:private print-handlers
+     {'clojure.lang.PersistentArrayMap
+      map-handler
 
-   #?(:clj 'clojure.lang.PersistentHashMap
-      :cljs cljs.core/PersistentHashMap)
-   map-handler
+      'clojure.lang.PersistentHashMap
+      map-handler
 
-   #?(:clj 'clojure.lang.MapEntry
-      :cljs 'cljs.core/MapEntry)
-   (fn [printer value]
-     (let [k (key value)
-           v (val value)]
-       (let [no-color (assoc printer :print-color false)]
-         (cond
-           (instance? lambdaisland.deep_diff.diff.Insertion k)
-           [:span
-            (print-insertion printer k)
-            (if (coll? v) (:map-coll-separator printer) " ")
-            (color/document printer ::insertion (puget/format-doc no-color v))]
+      'clojure.lang.MapEntry
+      map-entry-handler
 
-           (instance? lambdaisland.deep_diff.diff.Deletion k)
-           [:span
-            (print-deletion printer k)
-            (if (coll? v) (:map-coll-separator printer) " ")
-            (color/document printer ::deletion (puget/format-doc no-color v))]
+      'java.util.Date
+      print-date
 
-           :else
-           [:span
-            (puget/format-doc printer k)
-            (if (coll? v) (:map-coll-separator printer) " ")
-            (puget/format-doc printer v)]))))
+      'java.util.GregorianCalendar
+      print-calendar
 
-   #?(:clj 'java.util.Date
-      :cljs 'js/Date)
-   print-date
+      'java.sql.Timestamp
+      print-timestamp})
+   :cljs
+   (def ^:private print-handlers
+     {'cljs.core.PersistentArrayMap
+      map-handler
 
-   ;; 'java.util.GregorianCalendar
-   ;; print-calendar
+      'cljs.core.PersistentHashMap
+      map-handler
 
-   ;; 'java.sql.Timestamp
-   ;; print-timestamp
+      'cljs.core.MapEntry
+      map-entry-handler
 
-   #?(:clj 'java.util.UUID
-       :cljs 'cljs.core.uuid)
-    (tagged-handler 'uuid str)})
+      'js/Date
+      print-date
+
+      'cljs.core.uuid
+      (puget/tagged-handler 'uuid str)}))
+
 
 (defn- print-handler-resolver [extra-handlers]
   (fn [^Class klz]
-    (and klz (get (merge @#'print-handlers extra-handlers)
-                  (symbol (.getName klz))))))
+    (and klz (get (merge @#'common-handlers @#'print-handlers extra-handlers)
+                  (symbol (get-type-name klz))))))
 
-(defn register-print-handler!
-  "Register an extra print handler.
+;; (defn register-print-handler!
+;;   "Register an extra print handler.
 
-  `type` must be a symbol of the fully qualified class name. `handler` is a
-  Puget handler function of two arguments, `printer` and `value`."
-  [type handler]
-  (alter-var-root #'print-handlers assoc type handler))
+;;   `type` must be a symbol of the fully qualified class name. `handler` is a
+;;   Puget handler function of two arguments, `printer` and `value`."
+;;   [type handler]
+;;   (alter-var-root #'print-handlers assoc type handler))
 
 (defn puget-printer
   ([]

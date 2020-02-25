@@ -2,7 +2,7 @@
   (:require [clojure.data :as data]
             [clj-diff.core :as seq-diff]))
 
-(declare diff)
+(declare local-diff)
 
 (defrecord Mismatch [- +])
 (defrecord Deletion [-])
@@ -70,7 +70,7 @@
   (map-indexed
    (fn [idx v]
      (if (contains? replacements idx)
-       (diff v (get replacements idx))
+       (local-diff v (get replacements idx))
        v))
    s))
 
@@ -98,10 +98,10 @@
          (into []))))
 
 #?(:clj (defn- val-type [val]
-  (let [t (type val)]
-    (if (class? t)
-      (symbol (.getName ^Class t))
-      t))))
+          (let [t (type val)]
+            (if (class? t)
+              (symbol (.getName ^Class t))
+              t))))
 
 (defn- diff-map [exp act]
   (first
@@ -116,7 +116,7 @@
            (assoc (->Deletion k) (exp k))
 
            (not (contains? del idx))
-           (assoc k (diff (get exp k) (get act k)))
+           (assoc k (local-diff (get exp k) (get act k)))
 
            (contains? ins idx)
            (into (map (juxt ->Insertion (partial get act))) (get ins idx)))
@@ -131,7 +131,7 @@
     exp
     (->Mismatch exp act)))
 
-(defn diff [exp act]
+(defn local-diff [exp act]
   (if (= (data/equality-partition exp) (data/equality-partition act))
     (diff-similar exp act)
     (diff-atom exp act)))
@@ -139,9 +139,9 @@
 #?(:clj (extend nil
           Diff
           {:diff-similar diff-atom})
-   :cljs (extend-type nil ;; I am not pretty sure about this. Lets wait for unit tests
+   :cljs (extend-type nil
            Diff
-           {:diff-similar diff-atom}))
+           (diff-similar [x y] (diff-atom x y))))
 
 #?(:clj (extend Object
           Diff
@@ -151,10 +151,9 @@
                              (diff-atom exp act)))})
    :cljs (extend-type object
            Diff
-           {:diff-similar (fn [exp act]
-                            (if (array?  exp)
-                              (diff-seq exp act)
-                              (diff-atom exp act)))}))
+           (diff-similar [x y] (if (array?  x)
+                                 (diff-seq x y)
+                                 (diff-atom x y)))))
 
 (extend-protocol Diff
   #?(:clj java.util.List
@@ -168,7 +167,6 @@
           act-seq (seq act)]
       (set (diff-seq exp-seq (concat (filter act exp-seq)
                                      (remove exp act-seq))))))
-
   #?(:clj java.util.Map
      :cljs cljs.core.map)
   (diff-similar [exp act] (diff-map exp act)))
@@ -208,7 +206,11 @@
   (left-undiff [m] (get m :-)))
 
 #?(:clj (extend nil Undiff {:left-undiff identity :right-undiff identity})
-   :cljs (extend-type nil Undiff {:left-undiff identity :right-undiff identity}))
+   :cljs (extend-type nil Undiff
+                      (left-undiff [m] (identity m))
+                      (right-undiff [m] (identity m))))
 
-$?(:clj (extend Object Undiff {:left-undiff identity :right-undiff identity})
-        :cljs (extend-type object Undiff {:left-undiff identity :right-undiff identity}))
+#?(:clj (extend Object Undiff {:left-undiff identity :right-undiff identity})
+   :cljs (extend-type object Undiff
+                      (left-undiff [m] (identity m))
+                      (right-undiff [m] (identity m))))
