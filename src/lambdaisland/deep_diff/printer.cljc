@@ -9,23 +9,25 @@
             #?@(:cljs
                 [[cljs-time.coerce :refer [from-date]]
                  [cljs-time.format :refer [formatter unparse]]
-                 [goog.string :refer [format]]
-                 [goog.object :as gobj]]))
-  #?(:clj (:import (java.text SimpleDateFormat)
-                   (java.util TimeZone)
-                   (java.sql Timestamp))))
+                 [goog.string :refer [format]]]))
+  #?(:clj
+     (:import (java.text SimpleDateFormat)
+              (java.util TimeZone)
+              (java.sql Timestamp))))
 
 (defn get-type-name
   "Get the type of the given object as a string. For Clojure, gets the name of
   the class of the object. For ClojureScript, gets either the `name` attribute
   or the protocol name if the `name` attribute doesn't exist."
   [x]
-  #?(:clj (.getName (class x))
-     :cljs (let [t (type x)
-                 n (.-name t)]
-             (if (empty? n)
-               (pr-str t)
-               n))))
+  #?(:clj
+     (.getName (class x))
+     :cljs
+     (let [t (type x)
+           n (.-name t)]
+       (if (empty? n)
+         (pr-str t)
+         n))))
 
 (defn print-deletion [printer expr]
   (let [no-color (assoc printer :print-color false)]
@@ -77,39 +79,46 @@
          (if (coll? v) (:map-coll-separator printer) " ")
          (puget/format-doc printer v)]))))
 
-
-#?(:clj (def ^:private ^ThreadLocal thread-local-utc-date-format
-          (proxy [ThreadLocal] []
-            (initialValue []
-              (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
-                (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
-   :cljs (def thread-local-utc-date-format
-           (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00"))))
+#?(:clj
+   (def ^:private ^ThreadLocal thread-local-utc-date-format
+     (proxy [ThreadLocal] []
+       (initialValue []
+         (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
+           (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+   :cljs
+   (def thread-local-utc-date-format
+     (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00"))))
 
 (def ^:private print-date
   (puget/tagged-handler
    'inst
-   #?(:clj #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)
-      :cljs (fn [input-date]
-                 (let [dt (from-date input-date)]
-                   (cljs-time.format/unparse thread-local-utc-date-format dt))))))
+   #?(:clj
+      #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)
+      :cljs
+      (fn [input-date]
+        (let [dt (from-date input-date)]
+          (cljs-time.format/unparse thread-local-utc-date-format dt))))))
 
-#?(:clj (def ^:private ^ThreadLocal thread-local-utc-timestamp-format
-  (proxy [ThreadLocal] []
-    (initialValue []
-      (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
-        (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
-   :cljs (def thread-local-utc-timestamp-format
-           (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss"))))
+#?(:clj
+   (def ^:private ^ThreadLocal thread-local-utc-timestamp-format
+     (proxy [ThreadLocal] []
+       (initialValue []
+         (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
+           (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+   :cljs
+   (def thread-local-utc-timestamp-format
+     (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss"))))
 
 (def ^:private print-timestamp
   (puget/tagged-handler
    'inst
-   #?(:clj #(str (.format ^SimpleDateFormat (.get thread-local-utc-timestamp-format) %)
-                 (format ".%09d-00:00" (.getNanos ^Timestamp %)))
-      :cljs (fn [input-date]
-              (let [dt (from-date input-date)]
-                (cljs-time.format/unparse thread-local-utc-timestamp-format dt))))))
+   #?(:clj
+      #(str (.format ^SimpleDateFormat (.get thread-local-utc-timestamp-format) %)
+            (format ".%09d-00:00" (.getNanos ^Timestamp %)))
+      :cljs
+      (fn [input-date]
+        (let [dt (from-date input-date)]
+          (cljs-time.format/unparse thread-local-utc-timestamp-format dt))))))
 
 (def ^:private print-calendar
   (puget/tagged-handler
@@ -166,19 +175,19 @@
       'cljs.core.uuid
       (puget/tagged-handler 'uuid str)}))
 
-
 (defn- print-handler-resolver [extra-handlers]
   (fn [^Class klz]
     (and klz (get (merge @#'common-handlers @#'print-handlers extra-handlers)
                   (symbol (get-type-name klz))))))
 
-;; (defn register-print-handler!
-;;   "Register an extra print handler.
+#?(:clj
+   (defn register-print-handler!
+     "Register an extra print handler.
 
-;;   `type` must be a symbol of the fully qualified class name. `handler` is a
-;;   Puget handler function of two arguments, `printer` and `value`."
-;;   [type handler]
-;;   (alter-var-root #'print-handlers assoc type handler))
+  `type` must be a symbol of the fully qualified class name. `handler` is a
+  Puget handler function of two arguments, `printer` and `value`."
+     [type handler]
+     (alter-var-root #'print-handlers assoc type handler)))
 
 (defn puget-printer
   ([]
