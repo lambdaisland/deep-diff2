@@ -130,7 +130,7 @@
   (if #?(:clj (= exp act)
          :cljs (= (js->clj exp) (js->clj act)))
     exp
-    ((->Mismatch exp act))))
+    (->Mismatch exp act)))
 
 (defn diff [exp act]
   ;; (print "Hola from diff namespace"))
@@ -172,9 +172,9 @@
      :cljs cljs.core/List)
   (diff-similar [exp act] (diff-seq exp act))
 
-  #?(:clj java.util.Vector
-     :cljs cljs.core/PersistentVector)
-     (diff-similar [exp act] (diff-seq exp act))
+  ;; #?(:clj java.util.Vector
+  ;;    :cljs cljs.core/PersistentVector)
+  ;;    (diff-similar [exp act] (diff-seq exp act)))
 
   #?(:clj java.util.Set
      :cljs cljs.core/PersistentHashSet)
