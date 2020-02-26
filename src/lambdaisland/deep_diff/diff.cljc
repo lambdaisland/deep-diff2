@@ -2,19 +2,19 @@
   (:require [clojure.data :as data]
             [clj-diff.core :as seq-diff]))
 
-(declare diff)
+(declare diff diff-similar left-undiff right-undiff)
 
 (defrecord Mismatch [- +])
 (defrecord Deletion [-])
 (defrecord Insertion [+])
 
 (defprotocol Diff
-  (diff-similar [x y]))
+  (-diff-similar [x y]))
 
 ;; For property based testing
 (defprotocol Undiff
-  (left-undiff [x])
-  (right-undiff [x]))
+  (-left-undiff [x])
+  (-right-undiff [x]))
 
 (defn- shift-insertions [ins]
   (reduce (fn [res idx]
@@ -126,107 +126,115 @@
          {}) 0]
       exp-ks))))
 
+(defn- primitive? [x]
+  (or (number? x) (string? x) (boolean? x) (inst? x) (keyword? x) (symbol? x)))
+
 (defn- diff-atom [exp act]
-  (if #?(:clj (= exp act)
-         :cljs (= (js->clj exp) (js->clj act)))
+  (if (= exp act)
     exp
     (->Mismatch exp act)))
 
+(defn- diff-similar [x y]
+  #?(:clj (-diff-similar x y)
+     :cljs
+     (if (primitive? x)
+       (diff-atom x y)
+       (-diff-similar x y))))
+
+(defn- left-undiff [m]
+  #?(:clj (-left-undiff m)
+     :cljs
+     (if (primitive? m)
+       m
+       (-left-undiff m))))
+
+(defn- right-undiff [m]
+  #?(:clj (-right-undiff m)
+     :cljs
+     (if (primitive? m)
+       m
+       (-right-undiff m))))
+
 (defn diff [exp act]
-  ;; (print "Hola from diff namespace"))
   (if (= (data/equality-partition exp) (data/equality-partition act))
     (diff-similar exp act)
     (diff-atom exp act)))
 
 #?(:clj (extend nil
           Diff
-          {:diff-similar diff-atom})
+          {:-diff-similar diff-atom})
    :cljs (extend-type nil
            Diff
-           (diff-similar [x y] (diff-atom x y))))
+           (-diff-similar [x y] (diff-atom x y))))
 
 #?(:clj (extend Object
           Diff
-          {:diff-similar (fn [exp act]
-                           (if (.isArray (.getClass ^Object exp))
-                             (diff-seq exp act)
-                             (diff-atom exp act)))})
-   :cljs (extend-type js/Number
-           Diff
-           (diff-similar [x y] (diff-atom (js/Number x) (js/Number y)))))
+          {:-diff-similar (fn [exp act]
+                            (if (.isArray (.getClass ^Object exp))
+                              (diff-seq exp act)
+                              (diff-atom exp act)))}))
 
-#?(:cljs (extend-type js/String
-           Diff
-           (diff-similar [x y] (diff-atom (js/String x) (js/String y)))))
-
-#?(:cljs (extend-type js/Boolean
-           Diff
-           (diff-similar [x y] (diff-atom (js/Boolean x) (js/Boolean y)))))
-
-#?(:cljs (extend-type js/Date
-           Diff
-           (diff-similar [x y] (diff-atom (js/Date x) (js/Date y)))))
 
 (extend-protocol Diff
   #?(:clj java.util.List
      :cljs cljs.core/List)
-  (diff-similar [exp act] (diff-seq exp act))
+  (-diff-similar [exp act] (diff-seq exp act))
 
-  ;; #?(:clj java.util.Vector
-  ;;    :cljs cljs.core/PersistentVector)
-  ;;    (diff-similar [exp act] (diff-seq exp act)))
+  #?@(:cljs
+      [cljs.core/PersistentVector
+       (-diff-similar [exp act] (diff-seq exp act))
+
+       cljs.core/PersistentHashMap
+       (-diff-similar [exp act] (diff-map exp act))])
 
   #?(:clj java.util.Set
      :cljs cljs.core/PersistentHashSet)
-  (diff-similar [exp act]
+  (-diff-similar [exp act]
     (let [exp-seq (seq exp)
           act-seq (seq act)]
       (set (diff-seq exp-seq (concat (filter act exp-seq)
                                      (remove exp act-seq))))))
   #?(:clj java.util.Map
      :cljs cljs.core/PersistentArrayMap)
-  (diff-similar [exp act] (diff-map exp act)))
+  (-diff-similar [exp act] (diff-map exp act)))
 
 (extend-protocol Undiff
   #?(:clj java.util.List
      :cljs cljs.core/List)
-  (left-undiff [s] (map left-undiff (remove #(instance? Insertion %) s)))
-  (right-undiff [s] (map right-undiff (remove #(instance? Deletion %) s)))
+  (-left-undiff [s] (map left-undiff (remove #(instance? Insertion %) s)))
+  (-right-undiff [s] (map right-undiff (remove #(instance? Deletion %) s)))
 
   #?(:clj java.util.Set
      :cljs cljs.core/PersistentHashSet)
-  (left-undiff [s] (set (left-undiff (seq s))))
-  (right-undiff [s] (set (right-undiff (seq s))))
+  (-left-undiff [s] (set (left-undiff (seq s))))
+  (-right-undiff [s] (set (right-undiff (seq s))))
 
   #?(:clj java.util.Map
      :cljs cljs.core/PersistentArrayMap)
-  (left-undiff [m]
+  (-left-undiff [m]
     (into {}
           (comp (remove #(instance? Insertion (key %)))
                 (map (juxt (comp left-undiff key) (comp left-undiff val))))
           m))
-  (right-undiff [m]
+  (-right-undiff [m]
     (into {}
           (comp (remove #(instance? Deletion (key %)))
                 (map (juxt (comp right-undiff key) (comp right-undiff val))))
           m))
 
   Mismatch
-  (left-undiff [m] (get m :-))
-  (right-undiff [m] (get m :+))
+  (-left-undiff [m] (get m :-))
+  (-right-undiff [m] (get m :+))
 
   Insertion
-  (right-undiff [m] (get m :+))
+  (-right-undiff [m] (get m :+))
 
   Deletion
-  (left-undiff [m] (get m :-)))
+  (-left-undiff [m] (get m :-)))
 
-#?(:clj (extend nil Undiff {:left-undiff identity :right-undiff identity})
-   :cljs (extend-type nil Undiff
-                      (left-undiff [m] (identity m))
-                      (right-undiff [m] (identity m))))
+(extend-type nil
+  Undiff
+  (-left-undiff [m] m)
+  (-right-undiff [m] m))
 
-#?(:clj (extend Object Undiff {:left-undiff identity :right-undiff identity})
-   :cljs (extend-type js/Number Undiff
-                      (left-undiff [m] (identity m))
-                      (right-undiff [m] (identity m))))
+#?(:clj (extend Object Undiff {:-left-undiff identity :-right-undiff identity}))
