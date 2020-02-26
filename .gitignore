@@ -4,6 +4,7 @@ target
 repl
 bin
 scratch.clj
+/out/
 /checkouts/
 /target/
 /.cljs_node_repl/

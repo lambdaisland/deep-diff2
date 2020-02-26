@@ -167,13 +167,16 @@
            Diff
            (-diff-similar [x y] (diff-atom x y))))
 
+#?(:cljs (extend-type js/Object
+           Diff
+           (-diff-similar [x y] (diff-atom (js->clj x) (js->clj y)))))
+
 #?(:clj (extend Object
           Diff
           {:-diff-similar (fn [exp act]
                             (if (.isArray (.getClass ^Object exp))
                               (diff-seq exp act)
                               (diff-atom exp act)))}))
-
 
 (extend-protocol Diff
   #?(:clj java.util.List
@@ -184,8 +187,14 @@
       [cljs.core/PersistentVector
        (-diff-similar [exp act] (diff-seq exp act))
 
+       cljs.core/EmptyList
+       (-diff-similar [exp act] (diff-seq exp act))
+
        cljs.core/PersistentHashMap
-       (-diff-similar [exp act] (diff-map exp act))])
+       (-diff-similar [exp act] (diff-map exp act))
+
+       array
+       (-diff-similar [exp act] (diff-seq exp act))])
 
   #?(:clj java.util.Set
      :cljs cljs.core/PersistentHashSet)
@@ -194,6 +203,7 @@
           act-seq (seq act)]
       (set (diff-seq exp-seq (concat (filter act exp-seq)
                                      (remove exp act-seq))))))
+
   #?(:clj java.util.Map
      :cljs cljs.core/PersistentArrayMap)
   (-diff-similar [exp act] (diff-map exp act)))
@@ -204,10 +214,22 @@
   (-left-undiff [s] (map left-undiff (remove #(instance? Insertion %) s)))
   (-right-undiff [s] (map right-undiff (remove #(instance? Deletion %) s)))
 
+  #?(:cljs cljs.core/EmptyList)
+  #?(:cljs (-left-undiff [s] (map left-undiff (remove #(instance? Insertion %) s))))
+  #?(:cljs (-right-undiff [s] (map right-undiff (remove #(instance? Deletion %) s))))
+
+  #?(:cljs cljs.core/PersistentVector)
+  #?(:cljs (-left-undiff [s] (map left-undiff (remove #(instance? Insertion %) s))))
+  #?(:cljs (-right-undiff [s] (map right-undiff (remove #(instance? Deletion %) s))))
+
   #?(:clj java.util.Set
      :cljs cljs.core/PersistentHashSet)
   (-left-undiff [s] (set (left-undiff (seq s))))
   (-right-undiff [s] (set (right-undiff (seq s))))
+
+  #?(:cljs cljs.core/KeySeq)
+  #?(:cljs (-left-undiff [s] (map left-undiff (remove #(instance? Insertion %) s))))
+  #?(:cljs (-right-undiff [s] (map right-undiff (remove #(instance? Deletion %) s))))
 
   #?(:clj java.util.Map
      :cljs cljs.core/PersistentArrayMap)
@@ -221,6 +243,18 @@
           (comp (remove #(instance? Deletion (key %)))
                 (map (juxt (comp right-undiff key) (comp right-undiff val))))
           m))
+
+  #?(:cljs cljs.core/PersistentHashMap)
+  #?(:cljs (-left-undiff [m]
+    (into {}
+          (comp (remove #(instance? Insertion (key %)))
+                (map (juxt (comp left-undiff key) (comp left-undiff val))))
+          m)))
+  #?(:cljs (-right-undiff [m]
+    (into {}
+          (comp (remove #(instance? Deletion (key %)))
+                (map (juxt (comp right-undiff key) (comp right-undiff val))))
+          m)))
 
   Mismatch
   (-left-undiff [m] (get m :-))
@@ -238,3 +272,12 @@
   (-right-undiff [m] m))
 
 #?(:clj (extend Object Undiff {:-left-undiff identity :-right-undiff identity}))
+#?(:cljs (extend-type cljs.core/UUID
+  Undiff
+  (-left-undiff [m] m)
+  (-right-undiff [m] m)))
+
+#?(:cljs (extend-type js/Object
+  Undiff
+  (-left-undiff [m] m)
+  (-right-undiff [m] m)))

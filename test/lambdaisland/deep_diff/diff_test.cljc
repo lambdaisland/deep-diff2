@@ -265,9 +265,6 @@
          (diff/diff-seq [:a :b :c] [:a :c :d]))))
 
 
-
-
-
 (comment
   (use 'kaocha.repl)
   (run)
