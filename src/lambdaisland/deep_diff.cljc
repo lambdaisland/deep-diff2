@@ -19,14 +19,14 @@
   [expected actual]
   (diff/diff expected actual))
 
-(defn printer
+(defn build-printer
   "Construct a Puget printer instance suitable for printing diffs.
 
   Extra options are passed on to Puget. Extra type handlers can be provides as
   `:extra-handlers` (a map from symbol to function), or by
   using [[lambdaisland.deep-diff.printer/register-print-handler!]]"
   ([]
-   (printer {}))
+   (build-printer {}))
   ([opts]
    (printer/puget-printer opts)))
 
@@ -36,7 +36,7 @@
   Pretty print a diffed data structure, as obtained from [[diff]]. Optionally
   takes a Puget printer instance, see [[printer]]."
   ([diff]
-   (pretty-print diff (printer)))
+   (pretty-print diff (build-printer)))
   ([diff printer]
    (-> diff
        (printer/format-doc printer)
