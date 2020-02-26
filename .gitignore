@@ -11,4 +11,4 @@ scratch.clj
 pom.xml
 pom.xml.asc
 *.jar
-*.class
+*.classout
