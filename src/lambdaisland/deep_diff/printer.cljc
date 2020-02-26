@@ -9,6 +9,7 @@
             #?@(:cljs
                 [[cljs-time.coerce :refer [from-date]]
                  [cljs-time.format :refer [formatter unparse]]
+                 [goog.string :refer [format]]
                  [goog.object :as gobj]]))
   #?(:clj (:import (java.text SimpleDateFormat)
                    (java.util TimeZone)
@@ -76,27 +77,30 @@
          (if (coll? v) (:map-coll-separator printer) " ")
          (puget/format-doc printer v)]))))
 
-(def ^:private ^ThreadLocal thread-local-utc-date-format
-  (proxy [ThreadLocal] []
-    (initialValue []
-      #?(:clj (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
-                (.setTimeZone (TimeZone/getTimeZone "GMT")))
-         :cljs (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00"))))))
+
+#?(:clj (def ^:private ^ThreadLocal thread-local-utc-date-format
+          (proxy [ThreadLocal] []
+            (initialValue []
+              (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00")
+                (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+   :cljs (def thread-local-utc-date-format
+           (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss.SSS-00:00"))))
 
 (def ^:private print-date
   (puget/tagged-handler
    'inst
    #?(:clj #(.format ^SimpleDateFormat (.get thread-local-utc-date-format) %)
-      :cljs (fun [input-date]
+      :cljs (fn [input-date]
                  (let [dt (from-date input-date)]
                    (cljs-time.format/unparse thread-local-utc-date-format dt))))))
 
-(def ^:private ^ThreadLocal thread-local-utc-timestamp-format
+#?(:clj (def ^:private ^ThreadLocal thread-local-utc-timestamp-format
   (proxy [ThreadLocal] []
     (initialValue []
-      #?(:clj (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
-                (.setTimeZone (TimeZone/getTimeZone "GMT")))
-         :cljs (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss"))))))
+      (doto (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss")
+        (.setTimeZone (TimeZone/getTimeZone "GMT"))))))
+   :cljs (def thread-local-utc-timestamp-format
+           (doto (cljs-time.format/formatter "yyyy-MM-dd'T'HH:mm:ss"))))
 
 (def ^:private print-timestamp
   (puget/tagged-handler

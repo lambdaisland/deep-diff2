@@ -2,7 +2,7 @@
   (:require [lambdaisland.deep-diff.diff :as diff]
             [lambdaisland.deep-diff.printer :as printer]))
 
-(defn diff
+(defn call-diff
   "Compare two values recursively.
 
   The result is a data structure similar to the ones passed in, but with
