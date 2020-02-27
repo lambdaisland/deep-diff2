@@ -169,7 +169,7 @@
       'cljs.core.MapEntry
       map-entry-handler
 
-      'js/Date
+      'inst
       print-date
 
       'cljs.core.uuid
