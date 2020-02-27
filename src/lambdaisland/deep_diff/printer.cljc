@@ -1,8 +1,7 @@
 (ns lambdaisland.deep-diff.printer
   (:require [fipp.engine :as fipp]
-            [fipp.visit :as fv]
             [puget.color :as color]
-            [puget.dispatch]
+            [puget.dispatch :as dispatch]
             [puget.printer :as puget]
             [arrangement.core]
             [lambdaisland.deep-diff.diff :as diff]
@@ -15,7 +14,7 @@
               (java.util TimeZone)
               (java.sql Timestamp))))
 
-(defn get-type-name
+(defn type-name
   "Get the type of the given object as a string. For Clojure, gets the name of
   the class of the object. For ClojureScript, gets either the `name` attribute
   or the protocol name if the `name` attribute doesn't exist."
@@ -26,7 +25,7 @@
      (let [t (type x)
            n (.-name t)]
        (if (empty? n)
-         (pr-str t)
+         (symbol (pr-str t))
          n))))
 
 (defn print-deletion [printer expr]
@@ -129,65 +128,72 @@
            ":"
            (subs formatted offset-minutes)))))
 
-(def ^:private common-handlers
-  {'lambdaisland.deep_diff.diff.Deletion
-   print-deletion
+(def ^:private print-handlers
+  (atom #?(:clj
+           {'lambdaisland.deep_diff.diff.Deletion
+            print-deletion
 
-   'lambdaisland.deep_diff.diff.Insertion
-   print-insertion
+            'lambdaisland.deep_diff.diff.Insertion
+            print-insertion
 
-   'lambdaisland.deep_diff.diff.Mismatch
-   print-mismatch})
+            'lambdaisland.deep_diff.diff.Mismatch
+            print-mismatch
 
-#?(:clj
-   (def ^:private print-handlers
-     {'clojure.lang.PersistentArrayMap
-      map-handler
+            'clojure.lang.PersistentArrayMap
+            map-handler
 
-      'clojure.lang.PersistentHashMap
-      map-handler
+            'clojure.lang.PersistentHashMap
+            map-handler
 
-      'clojure.lang.MapEntry
-      map-entry-handler
+            'clojure.lang.MapEntry
+            map-entry-handler
 
-      'java.util.Date
-      print-date
+            'java.util.Date
+            print-date
 
-      'java.util.GregorianCalendar
-      print-calendar
+            'java.util.GregorianCalendar
+            print-calendar
 
-      'java.sql.Timestamp
-      print-timestamp})
-   :cljs
-   (def ^:private print-handlers
-     {'cljs.core.PersistentArrayMap
-      map-handler
+            'java.sql.Timestamp
+            print-timestamp}
 
-      'cljs.core.PersistentHashMap
-      map-handler
+           :cljs
+           {'lambdaisland.deep-diff.diff/Deletion
+            print-deletion
 
-      'cljs.core.MapEntry
-      map-entry-handler
+            'lambdaisland.deep-diff.diff/Insertion
+            print-insertion
 
-      'inst
-      print-date
+            'lambdaisland.deep-diff.diff/Mismatch
+            print-mismatch
 
-      'cljs.core.uuid
-      (puget/tagged-handler 'uuid str)}))
+            'cljs.core/PersistentArrayMap
+            map-handler
+
+            'cljs.core/PersistentHashMap
+            map-handler
+
+            'cljs.core/MapEntry
+            map-entry-handler
+
+            'Date
+            print-date
+
+            'cljs.core/UUID
+            (puget/tagged-handler 'uuid str)})))
 
 (defn- print-handler-resolver [extra-handlers]
   (fn [^Class klz]
-    (and klz (get (merge @#'common-handlers @#'print-handlers extra-handlers)
-                  (symbol (get-type-name klz))))))
+    (and klz (get (merge @print-handlers extra-handlers)
+                  (symbol (type-name klz))))))
 
-#?(:clj
-   (defn register-print-handler!
-     "Register an extra print handler.
+(defn register-print-handler!
+  "Register an extra print handler.
 
   `type` must be a symbol of the fully qualified class name. `handler` is a
   Puget handler function of two arguments, `printer` and `value`."
-     [type handler]
-     (alter-var-root #'print-handlers assoc type handler)))
+  [type handler]
+  (swap! print-handlers assoc type handler))
 
 (defn puget-printer
   ([]
