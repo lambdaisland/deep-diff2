@@ -39,8 +39,7 @@
       (is (= []
              (diff/diff [] [])))
 
-      (is (= #?(:clj (diff/->Mismatch (into-array [1 2 3]) [1 2 3])
-                :cljs [1 2 3])
+      (is (= [1 2 3]
              (diff/diff (into-array [1 2 3]) [1 2 3])))
 
       (is (= [:a]
