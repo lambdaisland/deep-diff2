@@ -1,4 +1,4 @@
-(ns lambdaisland.deep-diff.diff
+(ns lambdaisland.deep-diff.diffing
   (:require [clojure.data :as data]
             [clj-diff.core :as seq-diff]))
 
@@ -134,8 +134,8 @@
     (-diff-similar x y)))
 
 (defn diffable? [exp]
-  (or (implements? Diff exp)
-      (satisfies? Diff exp)))
+  #?(:cljs (or (implements? Diff exp) (satisfies? Diff exp))
+     :clj (satisfies? Diff exp)))
 
 (defn diff [exp act]
   (cond
@@ -146,8 +146,9 @@
          (= (data/equality-partition exp) (data/equality-partition act)))
     (diff-similar exp act)
 
-    (array? exp)
-    (diff-seq exp act)
+    #?@(:cljs
+        [(array? exp)
+         (diff-seq exp act)])
 
     (record? exp)
     (diff-map exp act)

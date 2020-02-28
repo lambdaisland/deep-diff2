@@ -1,10 +1,10 @@
-(ns lambdaisland.deep-diff.printer
+(ns lambdaisland.deep-diff.printing
   (:require [fipp.engine :as fipp]
             [puget.color :as color]
             [puget.dispatch :as dispatch]
             [puget.printer :as puget]
             [arrangement.core]
-            [lambdaisland.deep-diff.diff :as diff]
+            [lambdaisland.deep-diff.diffing :as diff]
             #?@(:cljs
                 [[cljs-time.coerce :refer [from-date]]
                  [cljs-time.format :refer [formatter unparse]]
@@ -60,13 +60,13 @@
         v (val value)]
     (let [no-color (assoc printer :print-color false)]
       (cond
-        (instance? lambdaisland.deep_diff.diff.Insertion k)
+        (instance? lambdaisland.deep_diff.diffing.Insertion k)
         [:span
          (print-insertion printer k)
          (if (coll? v) (:map-coll-separator printer) " ")
          (color/document printer ::insertion (puget/format-doc no-color v))]
 
-        (instance? lambdaisland.deep_diff.diff.Deletion k)
+        (instance? lambdaisland.deep_diff.diffing.Deletion k)
         [:span
          (print-deletion printer k)
          (if (coll? v) (:map-coll-separator printer) " ")
@@ -130,13 +130,13 @@
 
 (def ^:private print-handlers
   (atom #?(:clj
-           {'lambdaisland.deep_diff.diff.Deletion
+           {'lambdaisland.deep_diff.diffing.Deletion
             print-deletion
 
-            'lambdaisland.deep_diff.diff.Insertion
+            'lambdaisland.deep_diff.diffing.Insertion
             print-insertion
 
-            'lambdaisland.deep_diff.diff.Mismatch
+            'lambdaisland.deep_diff.diffing.Mismatch
             print-mismatch
 
             'clojure.lang.PersistentArrayMap
@@ -158,13 +158,13 @@
             print-timestamp}
 
            :cljs
-           {'lambdaisland.deep-diff.diff/Deletion
+           {'lambdaisland.deep-diff.diffing/Deletion
             print-deletion
 
-            'lambdaisland.deep-diff.diff/Insertion
+            'lambdaisland.deep-diff.diffing/Insertion
             print-insertion
 
-            'lambdaisland.deep-diff.diff/Mismatch
+            'lambdaisland.deep-diff.diffing/Mismatch
             print-mismatch
 
             'cljs.core/PersistentArrayMap

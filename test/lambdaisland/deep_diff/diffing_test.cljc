@@ -1,10 +1,10 @@
-(ns lambdaisland.deep-diff.diff-test
+(ns lambdaisland.deep-diff.diffing-test
   (:require [clojure.test :refer [deftest testing is are]]
             [clojure.test.check :as tc]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
-            [lambdaisland.deep-diff.diff :as diff]))
+            [lambdaisland.deep-diff.diffing :as diff]))
 
 (doseq [v [#'diff/diff-seq
            #'diff/diff-seq-replacements
@@ -39,7 +39,8 @@
       (is (= []
              (diff/diff [] [])))
 
-      (is (= [1 2 3]
+      (is (= #?(:clj (diff/->Mismatch (into-array [1 2 3]) [1 2 3])
+                :cljs [1 2 3])
              (diff/diff (into-array [1 2 3]) [1 2 3])))
 
       (is (= [:a]
@@ -204,11 +205,12 @@
   (is (= [#{0 1} {-1 [[]]}]
          (diff/del+ins [0 0] [[]]))))
 
-(defspec round-trip-diff 100
-  (prop/for-all [x gen/any
-                 y gen/any]
-                (let [diff (diff/diff x y)]
-                  (= [x y] [(diff/left-undiff diff) (diff/right-undiff diff)]))))
+#?(:clj
+   (defspec round-trip-diff 100
+     (prop/for-all [x gen/any
+                    y gen/any]
+                   (let [diff (diff/diff x y)]
+                     (= [x y] [(diff/left-undiff diff) (diff/right-undiff diff)])))))
 
 
 (deftest diff-seq-test
@@ -269,11 +271,11 @@
   (use 'kaocha.repl)
   (run)
 
-  (defmethod clojure.core/print-method lambdaisland.deep-diff.diff.Insertion [v writer]
+  (defmethod clojure.core/print-method lambdaisland.deep-diff.diffing.Insertion [v writer]
     (.write writer (pr-str `(diff/->Insertion ~(:+ v)))))
 
-  (defmethod clojure.core/print-method lambdaisland.deep-diff.diff.Deletion [v writer]
+  (defmethod clojure.core/print-method lambdaisland.deep-diff.diffing.Deletion [v writer]
     (.write writer (pr-str `(diff/->Deletion ~(:- v)))))
 
-  (defmethod clojure.core/print-method lambdaisland.deep-diff.diff.Mismatch [v writer]
+  (defmethod clojure.core/print-method lambdaisland.deep-diff.diffing.Mismatch [v writer]
     (.write writer (pr-str `(diff/->Mismatch ~(:- v) ~(:+ v))))))
