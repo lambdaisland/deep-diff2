@@ -156,6 +156,14 @@
     :else
     (diff-atom exp act)))
 
+#?(:clj
+   (extend Object
+     Diff
+     {:-diff-similar (fn [exp act]
+                      (if (.isArray (.getClass ^Object exp))
+                        (diff-seq exp act)
+                        (diff-atom exp act)))}))
+
 (extend-protocol Diff
   #?(:clj java.util.Set :cljs cljs.core/PersistentHashSet)
   (-diff-similar [exp act]
