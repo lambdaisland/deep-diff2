@@ -14,9 +14,19 @@ Recursively compare Clojure or ClojureScript data structures, and produce a colo
 If you find value in our work please consider [becoming a backer on Open Collective](http://opencollective.com/lambda-island#section-contribute)
 <!-- /opencollective -->
 
-## Install
+## Installation
 
-[![Clojars Project](https://img.shields.io/clojars/v/lambdaisland/deep-diff2.svg)](https://clojars.org/lambdaisland/deep-diff2)
+deps.edn
+
+```
+lambdaisland/deep-diff2 {:mvn/version "2.0.0"}
+```
+
+project.clj
+
+```
+[lambdaisland/deep-diff2 "2.0.0"]
+```
 
 ## Use
 
@@ -61,7 +71,7 @@ You can register print handlers for new types using
 `lambdaisland.deep-diff2.printer/register-print-handler!`, or by passing and
 `:extra-handlers` map to `printer`.
 
-### Deep-diff 1 vs 2
+## Deep-diff 1 vs 2
 
 The original deep-diff only worked on Clojure, not ClojureScript. In porting the
 code to CLJC we were forced to make some breaking changes. To not break existing
@@ -85,7 +95,7 @@ patches there, so we may put out bugfix releases of the original deep-diff in
 the future. When in doubt check the CHANGELOG.
 
 <!-- contributing -->
-### Contributing
+## Contributing
 
 Everyone has a right to submit patches to this projects, and thus become a contributor.
 
