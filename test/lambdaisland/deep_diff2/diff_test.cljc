@@ -204,7 +204,9 @@
      (and (= (.call js/toString node) (str "[object Number]"))
           (js/eval (str node " != +" node )))))
 
-(def gen-any-except-NaN (gen/such-that (complement NaN?) gen/any))
+(def gen-any-except-NaN (gen/recursive-gen
+                         gen/container-type
+                         (gen/such-that (complement NaN?) gen/simple-type)))
 
 (defspec round-trip-diff 100
   (prop/for-all [x gen-any-except-NaN
