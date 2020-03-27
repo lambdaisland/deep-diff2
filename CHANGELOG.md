@@ -2,9 +2,11 @@
 
 ## Added
 
-## Fixed
+- Added support for ClojureScript (ported to CLJC)
 
 ## Changed
+
+- Changed namespace and artifact (jar) names to include a "2" suffix, because of breaking changes.
 
 # 0.0-47 (2019-04-11 / 27cf55c)
 
