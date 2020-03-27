@@ -1,7 +1,7 @@
-(ns lambdaisland.deep-diff.printer-test
+(ns lambdaisland.deep-diff2.printer-test
   (:require [clojure.test :refer [deftest testing is are]]
-            [lambdaisland.deep-diff.diff :as diff]
-            [lambdaisland.deep-diff.printer :as printer])
+            [lambdaisland.deep-diff2.diff-impl :as diff]
+            [lambdaisland.deep-diff2.printer-impl :as printer])
   #?(:clj
      (:import (java.sql Timestamp)
               (java.util Date

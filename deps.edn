@@ -1,14 +1,9 @@
 {:paths ["resources" "src" "test"]
- :deps  {org.clojure/clojure           {:mvn/version "1.10.0"}
-         ;;mvxcvi/puget                {:mvn/version "1.1.2"}
-         github-lambdaisland/puget     {:git/url "https://github.com/lambdaisland/puget"
-                                        :sha "ea860be1f0c6a5e406c45a414802c41e902d010c"}
-         fipp                          {:mvn/version "0.6.17"}
-         org.clojure/core.rrb-vector   {:mvn/version "0.0.14"}
-         ;;tech.droit/clj-diff         {:mvn/version "1.0.1"}
+ :deps  {org.clojure/clojure           {:mvn/version "1.10.1"}
+         fipp                          {:mvn/version "0.6.22"}
+         org.clojure/core.rrb-vector   {:mvn/version "0.1.1"}
          org.clojars.rymndhng/clj-diff {:mvn/version "1.1.1-SNAPSHOT"}
-         mvxcvi/arrangement            {:mvn/version "1.2.0"}
-         com.andrewmcveigh/cljs-time   {:mvn/version "0.5.2"}}
+         mvxcvi/arrangement            {:mvn/version "1.2.0"}}
 
  :aliases {:cljs
            {:extra-deps {org.clojure/clojurescript   {:mvn/version "1.10.597"}}}

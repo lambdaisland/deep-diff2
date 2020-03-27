@@ -1,4 +1,4 @@
-(ns lambdaisland.deep-diff.diff
+(ns lambdaisland.deep-diff2.diff-impl
   (:require [clojure.data :as data]
             [clj-diff.core :as seq-diff]))
 
@@ -134,8 +134,12 @@
     (-diff-similar x y)))
 
 (defn diffable? [exp]
-  (or (implements? Diff exp)
-      (satisfies? Diff exp)))
+  (satisfies? Diff exp))
+
+;; ClojureScript has this, Clojure doesn't
+#?(:clj
+   (defn array? [x]
+     (and x (.isArray (class x)))))
 
 (defn diff [exp act]
   (cond

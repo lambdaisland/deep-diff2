@@ -1,18 +1,10 @@
-(ns lambdaisland.deep-diff.diff-test
+(ns lambdaisland.deep-diff2.diff-test
   (:require [clojure.test :refer [deftest testing is are]]
             [clojure.test.check :as tc]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
-            [lambdaisland.deep-diff.diff :as diff]))
-
-(doseq [v [#'diff/diff-seq
-           #'diff/diff-seq-replacements
-           #'diff/diff-seq-insertions
-           #'diff/diff-seq-deletions
-           #'diff/replacements
-           #'diff/del+ins]]
-  (alter-meta! v dissoc :private))
+            [lambdaisland.deep-diff2.diff-impl :as diff]))
 
 (defrecord ARecord [])
 
@@ -204,12 +196,21 @@
   (is (= [#{0 1} {-1 [[]]}]
          (diff/del+ins [0 0] [[]]))))
 
-(defspec round-trip-diff 100
-  (prop/for-all [x gen/any
-                 y gen/any]
-                (let [diff (diff/diff x y)]
-                  (= [x y] [(diff/left-undiff diff) (diff/right-undiff diff)]))))
+;; (not= ##NaN ##NaN), which messes up test results
+;; https://stackoverflow.com/questions/16983955/check-for-nan-in-clojurescript
+(defn NaN? [node]
+  #?(:clj false
+     :cljs
+     (and (= (.call js/toString node) (str "[object Number]"))
+          (js/eval (str node " != +" node )))))
 
+(def gen-any-except-NaN (gen/such-that (complement NaN?) gen/any))
+
+(defspec round-trip-diff 100
+  (prop/for-all [x gen-any-except-NaN
+                 y gen-any-except-NaN]
+    (let [diff (diff/diff x y)]
+      (= [x y] [(diff/left-undiff diff) (diff/right-undiff diff)]))))
 
 (deftest diff-seq-test
   (is (= [(diff/->Insertion 1) 2 (diff/->Insertion 3)]
@@ -269,11 +270,11 @@
   (use 'kaocha.repl)
   (run)
 
-  (defmethod clojure.core/print-method lambdaisland.deep-diff.diff.Insertion [v writer]
+  (defmethod clojure.core/print-method lambdaisland.deep-diff2.diff.Insertion [v writer]
     (.write writer (pr-str `(diff/->Insertion ~(:+ v)))))
 
-  (defmethod clojure.core/print-method lambdaisland.deep-diff.diff.Deletion [v writer]
+  (defmethod clojure.core/print-method lambdaisland.deep-diff2.diff.Deletion [v writer]
     (.write writer (pr-str `(diff/->Deletion ~(:- v)))))
 
-  (defmethod clojure.core/print-method lambdaisland.deep-diff.diff.Mismatch [v writer]
+  (defmethod clojure.core/print-method lambdaisland.deep-diff2.diff.Mismatch [v writer]
     (.write writer (pr-str `(diff/->Mismatch ~(:- v) ~(:+ v))))))

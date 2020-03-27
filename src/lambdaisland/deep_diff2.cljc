@@ -1,8 +1,8 @@
-(ns lambdaisland.deep-diff
-  (:require [lambdaisland.deep-diff.diff :as diff]
-            [lambdaisland.deep-diff.printer :as printer]))
+(ns lambdaisland.deep-diff2
+  (:require [lambdaisland.deep-diff2.diff-impl :as diff-impl]
+            [lambdaisland.deep-diff2.printer-impl :as printer-impl]))
 
-(defn call-diff
+(defn diff
   "Compare two values recursively.
 
   The result is a data structure similar to the ones passed in, but with
@@ -19,16 +19,16 @@
   [expected actual]
   (diff/diff expected actual))
 
-(defn build-printer
+(defn printer
   "Construct a Puget printer instance suitable for printing diffs.
 
   Extra options are passed on to Puget. Extra type handlers can be provides as
   `:extra-handlers` (a map from symbol to function), or by
   using [[lambdaisland.deep-diff.printer/register-print-handler!]]"
   ([]
-   (build-printer {}))
+   (printer {}))
   ([opts]
-   (printer/puget-printer opts)))
+   (printer-impl/puget-printer opts)))
 
 (defn pretty-print
   "Pretty print a diff.
@@ -39,5 +39,5 @@
    (pretty-print diff (build-printer)))
   ([diff printer]
    (-> diff
-       (printer/format-doc printer)
-       (printer/print-doc printer))))
+       (printer-impl/format-doc printer)
+       (printer-impl/print-doc printer))))
