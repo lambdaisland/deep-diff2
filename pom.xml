@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>lambdaisland</groupId>
-  <artifactId>deep-diff</artifactId>
+  <artifactId>deep-diff2</artifactId>
   <version>0.0-47</version>
-  <name>deep-diff</name>
+  <name>deep-diff2</name>
   <description>Recursively diff Clojure data structures.</description>
-  <url>https://github.com/lambdaisland/deep-diff</url>
+  <url>https://github.com/lambdaisland/deep-diff2</url>
   <inceptionYear>2018</inceptionYear>
   <organization>
     <name>Lambda Island</name>
@@ -19,9 +19,9 @@
     </license>
   </licenses>
   <scm>
-    <url>https://github.com/lambdaisland/deep-diff</url>
-    <connection>scm:git:git://github.com/lambdaisland/deep-diff.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/lambdaisland/deep-diff.git</developerConnection>
+    <url>https://github.com/lambdaisland/deep-diff2</url>
+    <connection>scm:git:git://github.com/lambdaisland/deep-diff2.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/lambdaisland/deep-diff2.git</developerConnection>
     <tag>eb1ce3037540b72635e32c3dfc0fbe588d2e195f</tag>
   </scm>
   <dependencies>
