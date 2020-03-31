@@ -17,7 +17,7 @@
   Insertions/Deletions in maps are marked by wrapping the key, even though the
   change applies to the whole map entry."
   [expected actual]
-  (diff/diff expected actual))
+  (diff-impl/diff expected actual))
 
 (defn printer
   "Construct a Puget printer instance suitable for printing diffs.
@@ -36,7 +36,7 @@
   Pretty print a diffed data structure, as obtained from [[diff]]. Optionally
   takes a Puget printer instance, see [[printer]]."
   ([diff]
-   (pretty-print diff (build-printer)))
+   (pretty-print diff (printer)))
   ([diff printer]
    (-> diff
        (printer-impl/format-doc printer)
