@@ -6,6 +6,12 @@
 
 ## Changed
 
+# 2.0.0-73 (2020-03-31 / 21c86413)
+
+## Fixed
+
+- Typos in deep_diff2.cljs resulting from naming changes
+
 # 2.0.0-72 (2020-03-27 / 2862182)
 
 ## Added

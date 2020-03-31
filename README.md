@@ -19,13 +19,13 @@ If you find value in our work please consider [becoming a backer on Open Collect
 deps.edn
 
 ```
-lambdaisland/deep-diff2 {:mvn/version "2.0.0-72"}
+lambdaisland/deep-diff2 {:mvn/version "2.0.0-73"}
 ```
 
 project.clj
 
 ```
-[lambdaisland/deep-diff2 "2.0.0-72"]
+[lambdaisland/deep-diff2 "2.0.0-73"]
 ```
 
 ## Use
