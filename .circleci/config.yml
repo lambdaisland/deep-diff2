@@ -16,15 +16,18 @@ commands:
           steps:
             - run: clojure -e '(println (System/getProperty "java.runtime.name") (System/getProperty "java.runtime.version") "\nClojure" (clojure-version))'
             - kaocha/execute:
-                args: "unit --reporter documentation --plugin cloverage --codecov"
+                args: "clj --reporter documentation --plugin cloverage --codecov"
+                clojure_version: << parameters.clojure_version >>
+            - kaocha/execute:
+                args: "cljs --reporter documentation --codecov"
                 clojure_version: << parameters.clojure_version >>
             - kaocha/upload_codecov:
-                flags: unit
+                flags: clj
 
 jobs:
   java-11-clojure-1_10:
     executor: clojure/openjdk11
-    steps: [{checkout_and_run: {clojure_version: "1.10.0"}}]
+    steps: [{checkout_and_run: {clojure_version: "1.10.1"}}]
 
   java-9-clojure-1_9:
     executor: clojure/openjdk9
@@ -32,7 +35,7 @@ jobs:
 
   java-8-clojure-1_10:
     executor: clojure/openjdk8
-    steps: [{checkout_and_run: {clojure_version: "1.10.0"}}]
+    steps: [{checkout_and_run: {clojure_version: "1.10.1"}}]
 
   java-8-clojure-1_9:
     executor: clojure/openjdk8
