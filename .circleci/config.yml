@@ -15,6 +15,7 @@ commands:
           cache_version: << parameters.clojure_version >>
           steps:
             - run: clojure -e '(println (System/getProperty "java.runtime.name") (System/getProperty "java.runtime.version") "\nClojure" (clojure-version))'
+            - run: npm install ws
             - kaocha/execute:
                 args: "clj --reporter documentation --plugin cloverage --codecov"
                 clojure_version: << parameters.clojure_version >>
