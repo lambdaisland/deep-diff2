@@ -19,7 +19,7 @@ commands:
                 args: "clj --reporter documentation --plugin cloverage --codecov"
                 clojure_version: << parameters.clojure_version >>
             - kaocha/execute:
-                args: "cljs --reporter documentation --codecov"
+                args: "cljs --reporter documentation"
                 clojure_version: << parameters.clojure_version >>
             - kaocha/upload_codecov:
                 flags: clj
