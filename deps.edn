@@ -6,12 +6,13 @@
          mvxcvi/arrangement            {:mvn/version "1.2.0"}}
 
  :aliases {:cljs
-           {:extra-deps {org.clojure/clojurescript   {:mvn/version "1.10.597"}}}
+           {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.597"}}}
 
            :dev
            {}
 
            :test
-           {:extra-deps {lambdaisland/kaocha      {:mvn/version "RELEASE"}
-                         lambdaisland/kaocha-cljs {:mvn/version "RELEASE"}
-                         org.clojure/test.check   {:mvn/version "0.10.0-alpha4"}}}}}
+           {:extra-deps {lambdaisland/kaocha       {:mvn/version "RELEASE"}
+                         lambdaisland/kaocha-cljs  {:mvn/version "RELEASE"}
+                         org.clojure/clojurescript {:mvn/version "1.10.597"}
+                         org.clojure/test.check    {:mvn/version "0.10.0-alpha4"}}}}}
