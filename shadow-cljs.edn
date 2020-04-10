@@ -14,5 +14,6 @@
    :ns-regexp "-test$"
    :devtools   {:repl-pprint true}}}
 
- :cache-blockers #{lambdaisland.chui.styles}
+ :cache-blockers #{lambdaisland.chui.styles
+                   lambdaisland.chui.test-data}
  }
