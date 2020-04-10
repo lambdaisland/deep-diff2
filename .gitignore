@@ -18,3 +18,4 @@ yarn.lock
 .shadow-cljs
 resources/public/ui
 test
+resources/public/
