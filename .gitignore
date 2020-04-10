@@ -13,3 +13,7 @@ pom.xml
 pom.xml.asc
 *.jar
 *.classout
+package.json
+yarn.lock
+.shadow-cljs
+resources/public/ui

@@ -1,0 +1,16 @@
+{:deps
+ {:aliases [:dev :chui]}
+
+ :dev-http
+ {8012 "classpath:public"}
+
+ :builds
+ {:main
+  {:target     :browser
+   :modules    {:main {:entries [lambdaisland.chui.demo]}}
+   :output-dir "resources/public/ui"
+   :asset-path "/ui"
+   :devtools   {:repl-pprint true}}}
+
+ :cache-blockers #{lambdaisland.chui.styles}
+ }
