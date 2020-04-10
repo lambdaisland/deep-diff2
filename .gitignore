@@ -17,3 +17,4 @@ package.json
 yarn.lock
 .shadow-cljs
 resources/public/ui
+test
