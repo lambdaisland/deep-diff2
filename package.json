@@ -1,0 +1,8 @@
+{
+  "name": "chui",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
