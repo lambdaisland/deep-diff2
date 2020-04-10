@@ -7,11 +7,10 @@
  :builds
  {:main
   {:target     :browser-test
-   :test-dir   "test"
    :runner-ns  lambdaisland.chui.demo
-   :output-dir "resources/public/ui"
+   :test-dir   "resources/public"
    :asset-path "/ui"
-   :ns-regexp "-test$"
+   :ns-regexp  "-test$"
    :devtools   {:repl-pprint true}}}
 
  :cache-blockers #{lambdaisland.chui.styles
