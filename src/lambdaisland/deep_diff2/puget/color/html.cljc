@@ -65,7 +65,9 @@
       (reduce (fn [acc span]
                 (case (first span)
                   nil acc
-                  \& (let [[escaped span] (str/split span #"(?<=;)" 2)
+                  \& (let [semicolon-pos ((fnil inc 0) (str/index-of span \;))
+                           escaped (subs span 0 semicolon-pos)
+                           span (subs span semicolon-pos)
                            acc (conj acc [:escaped escaped])]
                        (if (seq span)
                          (conj acc span)
