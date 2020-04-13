@@ -1,22 +1,16 @@
 # Unreleased
 
-- Fix unsupported cljs lookbehind regex in code inherited from Puget
-
-## Added
-
 ## Fixed
+
+- Fix unsupported cljs lookbehind regex in code inherited from Puget
 
 ## Changed
 
 # 2.0.0-84 (2020-04-01 / 9c2af83)
 
-## Added
-
 ## Fixed
 
 - Typos in deep_diff2.cljs resulting from naming changes
-
-## Changed
 
 # 2.0.0-72 (2020-03-27 / 2862182)
 
