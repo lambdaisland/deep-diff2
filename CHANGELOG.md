@@ -1,5 +1,7 @@
 # Unreleased
 
+- Fix unsupported cljs lookbehind regex in code inherited from Puget
+
 ## Added
 
 ## Fixed
