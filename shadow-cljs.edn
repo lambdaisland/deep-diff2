@@ -14,5 +14,4 @@
    :devtools   {:repl-pprint true}}}
 
  :cache-blockers #{lambdaisland.chui.styles
-                   lambdaisland.chui.test-data}
- }
+                   lambdaisland.chui.test-data}}
