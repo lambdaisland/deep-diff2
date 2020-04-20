@@ -1,10 +1,8 @@
-# 2.0.0-90 (2020-04-13 / 966307f)
+# Unreleased
 
 ## Fixed
 
 - Fix unsupported cljs lookbehind regex in code inherited from Puget
-
-## Changed
 
 # 2.0.0-84 (2020-04-01 / 9c2af83)
 
