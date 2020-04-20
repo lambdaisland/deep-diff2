@@ -2,7 +2,7 @@
   (:require [clojure.data :as data]
             [clj-diff.core :as seq-diff]))
 
-(declare diff diff-similar left-undiff right-undiff)
+(declare diff diff-similar)
 
 (defrecord Mismatch [- +])
 (defrecord Deletion [-])
