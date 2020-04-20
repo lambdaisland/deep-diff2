@@ -7,7 +7,7 @@
  :builds
  {:main
   {:target     :browser-test
-   :runner-ns  lambdaisland.chui.demo
+   :runner-ns  lambdaisland.chui.shadowrun
    :test-dir   "resources/public"
    :asset-path "/ui"
    :ns-regexp  "-test$"
