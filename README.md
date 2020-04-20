@@ -21,13 +21,13 @@ consider [becoming a backer on Open Collective](http://opencollective.com/lambda
 deps.edn
 
 ```
-lambdaisland/deep-diff2 {:mvn/version "2.0.0-90"}
+lambdaisland/deep-diff2 {:mvn/version "2.0.0-93"}
 ```
 
 project.clj
 
 ```
-[lambdaisland/deep-diff2 "2.0.0-90"]
+[lambdaisland/deep-diff2 "2.0.0-93"]
 ```
 
 ## Use
