@@ -8,6 +8,11 @@ Recursively compare Clojure or ClojureScript data structures, and produce a colo
 
 ![screenshot showing REPL example](screenshot.png)
 
+Deep-diff2 is foremost intended for creating visual diffs for human consumption,
+if you want to programatically diff/patch Clojure data structures then
+[Editscript](https://github.com/juji-io/editscript) may be a better fit, see
+[this write-up by Huahai Yang](https://juji.io/blog/comparing-clojure-diff-libraries/).
+
 <!-- opencollective -->
 ### Support Lambda Island Open Source
 
