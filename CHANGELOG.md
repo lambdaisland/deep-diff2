@@ -10,7 +10,7 @@
 
 ## Fixed
 
-- Fix unsupported cljs lookbehind regex in code inherited from Puget
+- Fix unsupported cljs lookbehind regex in code inherited from Puget (Thanks [@JarrodCTaylor](https://github.com/JarrodCTaylor)!)
 
 # 2.0.0-84 (2020-04-01 / 9c2af83)
 
