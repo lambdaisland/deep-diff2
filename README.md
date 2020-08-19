@@ -1,7 +1,7 @@
 # lambdaisland/deep-diff2
 
 <!-- badges -->
-[![CircleCI](https://circleci.com/gh/lambdaisland/deep-diff2.svg?style=svg)](https://circleci.com/gh/lambdaisland/deep-diff2) [![cljdoc badge](https://cljdoc.org/badge/lambdaisland/deep-diff2)](https://cljdoc.org/d/lambdaisland/deep-diff2) [![Clojars Project](https://img.shields.io/clojars/v/lambdaisland/deep-diff2.svg)](https://clojars.org/lambdaisland/deep-diff2) [![codecov](https://codecov.io/gh/lambdaisland/deep-diff2/branch/master/graph/badge.svg)](https://codecov.io/gh/lambdaisland/deep-diff2)
+[![CircleCI](https://circleci.com/gh/lambdaisland/deep-diff2.svg?style=svg)](https://circleci.com/gh/lambdaisland/deep-diff2) [![cljdoc badge](https://cljdoc.org/badge/lambdaisland/deep-diff2)](https://cljdoc.org/d/lambdaisland/deep-diff2) [![Clojars Project](https://img.shields.io/clojars/v/lambdaisland/deep-diff2.svg)](https://clojars.org/lambdaisland/deep-diff2)
 <!-- /badges -->
 
 Recursively compare Clojure or ClojureScript data structures, and produce a colorized diff of the result.
@@ -14,11 +14,25 @@ if you want to programatically diff/patch Clojure data structures then
 [this write-up by Huahai Yang](https://juji.io/blog/comparing-clojure-diff-libraries/).
 
 <!-- opencollective -->
-### Support Lambda Island Open Source
 
-lambdaisland/deep-diff2 is part of a growing collection of quality Clojure libraries and
-tools released on the Lambda Island label. If you find value in our work please
-consider [becoming a backer on Open Collective](http://opencollective.com/lambda-island#section-contribute)
+&nbsp;
+
+<img align="left" src="https://github.com/lambdaisland/open-source/raw/master/artwork/lighthouse_readme.png">
+
+&nbsp;
+
+## Support Lambda Island Open Source
+
+deep-diff2 is part of a growing collection of quality Clojure libraries and
+tools released on the Lambda Island label. If you are using this project
+commercially then you are expected to pay it forward by
+[becoming a backer on Open Collective](http://opencollective.com/lambda-island#section-contribute),
+so that we may continue to enjoy a thriving Clojure ecosystem.
+
+&nbsp;
+
+&nbsp;
+
 <!-- /opencollective -->
 
 ## Installation
@@ -104,13 +118,13 @@ the future. When in doubt check the CHANGELOG.
 <!-- contributing -->
 ## Contributing
 
-Everyone has a right to submit patches to this projects, and thus become a contributor.
+Everyone has a right to submit patches to deep-diff2, and thus become a contributor.
 
 Contributors MUST
 
 - adhere to the [LambdaIsland Clojure Style Guide](https://nextjournal.com/lambdaisland/clojure-style-guide)
 - write patches that solve a problem. Start by stating the problem, then supply a minimal solution. `*`
-- agree to license their contributions as MPLv2.
+- agree to license their contributions as EPL 1.0.
 - not break the contract with downstream consumers. `**`
 - not break the tests.
 
@@ -123,9 +137,8 @@ If you submit a pull request that adheres to these rules, then it will almost
 certainly be merged immediately. However some things may require more
 consideration. If you add new dependencies, or significantly increase the API
 surface, then we need to decide if these changes are in line with the project's
-goals. In this case you can start by [writing a
-pitch](https://nextjournal.com/lambdaisland/pitch-template), and collecting
-feedback on it.
+goals. In this case you can start by [writing a pitch](https://nextjournal.com/lambdaisland/pitch-template),
+and collecting feedback on it.
 
 `*` This goes for features too, a feature needs to solve a problem. State the problem it solves, then supply a minimal solution.
 
@@ -154,7 +167,7 @@ Another library that implements a form of data structure diffing is [editscript]
 <!-- license -->
 ## License
 
-Copyright &copy; 2018-2020 Arne Brasseur and Contributors
+Copyright &copy; 2018-2020 Arne Brasseur and contributors
 
 Available under the terms of the Eclipse Public License 1.0, see LICENSE.txt
 <!-- /license -->
