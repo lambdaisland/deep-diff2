@@ -1,18 +1,8 @@
 # Unreleased
 
-## Added
-
-## Fixed
-
 ## Changed
 
-# 2.0.0.105 (2020-08-19 / 6a7dc03)
-
-## Added
-
-## Fixed
-
-## Changed
+- Switch to using lambdaisland/clj-diff, a fork of an upstream fork
 
 # 2.0.0-93 (2020-04-20 / 6ff9209)
 
