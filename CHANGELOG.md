@@ -1,4 +1,4 @@
-# Unreleased
+# 2.0.108 (2020-08-19 / e006fc5)
 
 ## Changed
 
