@@ -1,9 +1,8 @@
 {:paths ["resources" "src" "test"]
- :deps  {org.clojure/clojure           {:mvn/version "1.10.1"}
-         fipp                          {:mvn/version "0.6.22"}
-         org.clojure/core.rrb-vector   {:mvn/version "0.1.1"}
-         org.clojars.rymndhng/clj-diff {:mvn/version "1.1.1-SNAPSHOT"}
-         mvxcvi/arrangement            {:mvn/version "1.2.0"}}
+ :deps  {fipp                        {:mvn/version "0.6.23"}
+         org.clojure/core.rrb-vector {:mvn/version "0.1.1"}
+         lambdaisland/clj-diff       {:mvn/version "1.1.58"}
+         mvxcvi/arrangement          {:mvn/version "1.2.1"}}
 
  :aliases {:cljs
            {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.597"}}}
@@ -12,9 +11,9 @@
            {}
 
            :chui
-           {:extra-deps {lambdaisland/chui {:local/root "../chui"}
-                         thheller/shadow-cljs {:mvn/version "2.8.93"}
-                         garden               {:mvn/version "1.3.9"}}
+           {:extra-deps  {lambdaisland/chui    {:local/root "../chui"}
+                          thheller/shadow-cljs {:mvn/version "2.8.93"}
+                          garden               {:mvn/version "1.3.9"}}
             :extra-paths ["../chui/resources" "../chui/dev"]}
 
            :test

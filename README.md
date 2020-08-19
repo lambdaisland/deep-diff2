@@ -151,8 +151,10 @@ This library was originally developed as part of the
 
 Another library that implements a form of data structure diffing is [editscript](https://github.com/juji-io/editscript).
 
+<!-- license -->
 ## License
 
 Copyright &copy; 2018-2020 Arne Brasseur and Contributors
 
 Available under the terms of the Eclipse Public License 1.0, see LICENSE.txt
+<!-- /license -->

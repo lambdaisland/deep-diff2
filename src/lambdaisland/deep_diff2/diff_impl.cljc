@@ -1,6 +1,6 @@
 (ns lambdaisland.deep-diff2.diff-impl
   (:require [clojure.data :as data]
-            [clj-diff.core :as seq-diff]))
+            [lambdaisland.clj-diff.core :as seq-diff]))
 
 (declare diff diff-similar)
 

@@ -1,0 +1,13 @@
+#!bin/bb
+
+(ns proj (:require [lioss.main :as lioss]))
+
+(lioss/main
+ {:license        :epl
+  :inception-year 2018
+  :description    "Recursively compare Clojure or ClojureScript data structures, and produce a colorized diff of the result."})
+
+
+;; Local Variables:
+;; mode:clojure
+;; End:
