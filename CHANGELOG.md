@@ -1,10 +1,13 @@
 # Unreleased
 
-## Added
-
 ## Fixed
 
+- Bump clj-diff, which fixes an issue where the diffing would not terminate in
+  specific cases
+
 ## Changed
+
+- Bump all dependencies to the latest version
 
 # 2.0.108 (2020-08-19 / e006fc5)
 

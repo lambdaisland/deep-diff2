@@ -1,2 +1,5 @@
 #!/usr/bin/env bash
-clojure -A:dev:test -m kaocha.runner "$@"
+
+[[ -d "node_modules/ws" ]] || npm install ws
+
+exec clojure -A:dev:test -m kaocha.runner "$@"
