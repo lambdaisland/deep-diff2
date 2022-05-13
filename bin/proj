@@ -4,6 +4,7 @@
 
 (lioss/main
  {:license        :epl
+  :group-id       "lambdaisland"
   :inception-year 2018
   :description    "Recursively compare Clojure or ClojureScript data structures, and produce a colorized diff of the result."})
 
