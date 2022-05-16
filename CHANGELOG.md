@@ -1,10 +1,8 @@
 # Unreleased
 
-## Added
-
 ## Fixed
 
-## Changed
+- Bump clj-diff, to bring back compatibility with earlier java versions
 
 # 2.1.121 (2022-05-13 / bb0dd63)
 
