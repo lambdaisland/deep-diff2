@@ -8,11 +8,8 @@
 
 # 2.3.127 (2022-07-01 / a8186a5)
 
-## Added
-
 ## Fixed
-
-## Changed
+* Remove "test" directory from the main paths in `deps.edn` to fix Cljdoc builds. This change also makes the artifact (very slightly) smaller, reducing the JAR's size by 3KB, or about 15 percent.
 
 # 2.2.124 (2022-05-16 / 5a94bec)
 
