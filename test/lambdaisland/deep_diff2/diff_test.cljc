@@ -199,7 +199,8 @@
 ;; (not= ##NaN ##NaN), which messes up test results
 ;; https://stackoverflow.com/questions/16983955/check-for-nan-in-clojurescript
 (defn NaN? [node]
-  #?(:clj false
+;; Need to confirm that it's a Double first.
+  #?(:clj (and (instance? Double node) (Double/isNaN node))
      :cljs
      (and (= (.call js/toString node) (str "[object Number]"))
           (js/eval (str node " != +" node )))))
