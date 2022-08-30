@@ -4,6 +4,8 @@
 
 ## Fixed
 
+- Fix issue (Fails with records with deleted keys)[https://github.com/lambdaisland/deep-diff2/issues/29]
+
 ## Changed
 
 # 0.0-47 (2019-04-11 / 27cf55c)

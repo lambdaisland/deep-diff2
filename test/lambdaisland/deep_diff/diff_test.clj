@@ -104,7 +104,9 @@
       (is (= {:a (diff/->Mismatch 1 2)}
              (diff/diff (map->ARecord {:a 1}) (map->ARecord {:a 2}))))
       (is (= {(diff/->Insertion :a) 1}
-             (diff/diff (map->ARecord {}) (map->ARecord {:a 1}))))))
+             (diff/diff (map->ARecord {}) (map->ARecord {:a 1}))))
+      (is (= {(diff/->Deletion :a) 1}
+             (diff/diff (map->ARecord {:a 1}) (map->ARecord {}))))))
 
   (is (= [{:x (diff/->Mismatch 1 2)}]
          (diff/diff [{:x 1}] [{:x 2}])))
