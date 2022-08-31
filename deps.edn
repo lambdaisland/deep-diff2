@@ -1,7 +1,7 @@
 {:paths ["src" "test"]
  :deps  {org.clojure/clojure         {:mvn/version "1.10.0"}
          mvxcvi/puget                {:mvn/version "1.1.2"}
-         fipp                        {:mvn/version "0.6.17"}
+         fipp/fipp                   {:mvn/version "0.6.17"}
          org.clojure/core.rrb-vector {:mvn/version "0.0.14"}
          tech.droit/clj-diff         {:mvn/version "1.0.1"}
          mvxcvi/arrangement          {:mvn/version "1.2.0"}}
