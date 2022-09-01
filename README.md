@@ -40,13 +40,13 @@ so that we may continue to enjoy a thriving Clojure ecosystem.
 deps.edn
 
 ```
-lambdaisland/deep-diff2 {:mvn/version "2.3.127"}
+lambdaisland/deep-diff2 {:mvn/version "2.4.138"}
 ```
 
 project.clj
 
 ```
-[lambdaisland/deep-diff2 "2.3.127"]
+[lambdaisland/deep-diff2 "2.4.138"]
 ```
 
 ## Use
