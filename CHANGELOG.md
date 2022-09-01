@@ -1,12 +1,8 @@
 # Unreleased
 
-## Added
-
 ## Fixed
 
 - Fix issue (Fails with records with deleted keys)[https://github.com/lambdaisland/deep-diff2/issues/29]
-
-## Changed
 
 # 2.3.127 (2022-07-01 / a8186a5)
 
