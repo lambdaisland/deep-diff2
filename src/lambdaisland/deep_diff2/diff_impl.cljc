@@ -107,7 +107,7 @@
       (fn [[m idx] k]
         [(cond-> m
            (contains? del idx)
-           (assoc (->Deletion k) (exp k))
+           (assoc (->Deletion k) (get exp k))
 
            (not (contains? del idx))
            (assoc k (diff (get exp k) (get act k)))
