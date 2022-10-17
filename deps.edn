@@ -18,7 +18,7 @@
 
            :test
            {:extra-paths ["test"]
-            :extra-deps {lambdaisland/kaocha       {:mvn/version "RELEASE"}
-                         com.lambdaisland/kaocha-cljs  {:mvn/version "1.2.123"}
+            :extra-deps {lambdaisland/kaocha       {:mvn/version "1.70.1086"}
+                         com.lambdaisland/kaocha-cljs  {:mvn/version "1.4.130"}
                          org.clojure/clojurescript {:mvn/version "1.11.60"}
                          org.clojure/test.check    {:mvn/version "1.1.1"}}}}}
