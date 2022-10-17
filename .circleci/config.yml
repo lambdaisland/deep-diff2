@@ -43,5 +43,5 @@ workflows:
       - test:
           matrix:
             parameters:
-              os: [clojure/openjdk16, clojure/openjdk15, clojure/openjdk11, clojure/openjdk8]
+              os: [clojure/openjdk19, clojure/openjdk17, clojure/openjdk15, clojure/openjdk11, clojure/openjdk8]
               clojure_version: ["1.10.3", "1.11.1"]
