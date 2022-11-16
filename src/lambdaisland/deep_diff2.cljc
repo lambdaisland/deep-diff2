@@ -26,7 +26,7 @@
   `:extra-handlers` (a map from symbol to function), or by
   using [[lambdaisland.deep-diff.printer/register-print-handler!]]"
   ([]
-   (printer {}))
+   (printer {:print-fallback :print}))
   ([opts]
    (printer-impl/puget-printer opts)))
 
