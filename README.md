@@ -92,6 +92,32 @@ You can register print handlers for new types using
 `lambdaisland.deep-diff2.printer/register-print-handler!`, or by passing and
 `:extra-handlers` map to `printer`.
 
+Note: the default printer is initialized as `(ddiff/printer {:print-fallback :print})` so that it will fall back to system printer when there is no match.
+
+### Time, data literal
+
+One of the creative ways of using deep-diff is to diff two time data.
+
+```
+(ddiff/diff #inst "2019-04-09T14:57:46.128-00:00"
+            #inst "2019-04-10T14:57:46.128-00:00")
+```
+or
+```
+(import '[java.sql Timestamp])
+(ddiff/diff (Timestamp. 0)
+            (doto (Timestamp. 1000) (.setNanos 101)))
+```
+
+If you need to diff a rich set of time literal, using [time-literals](https://github.com/henryw374/time-literals) is probably a good choice. 
+
+```
+(require '[time-literals.read-write])
+(require '[lambdaisland.deep-diff2 :as ddiff])
+(time-literals.read-write/print-time-literals-clj!)
+(ddiff/pretty-print (ddiff/diff #time/date "2039-01-01" #time/date-time "2018-07-05T08:08:44.026"))
+```
+
 ## Deep-diff 1 vs 2
 
 The original deep-diff only worked on Clojure, not ClojureScript. In porting the
