@@ -2,7 +2,7 @@
  :deps  {fipp/fipp                   {:mvn/version "0.6.26"}
          org.clojure/core.rrb-vector {:mvn/version "0.1.2"}
          lambdaisland/clj-diff       {:mvn/version "1.3.67"}
-         mvxcvi/arrangement          {:mvn/version "2.0.0"}}
+         mvxcvi/arrangement          {:mvn/version "2.1.0"}}
 
  :aliases {:cljs
            {:extra-deps {org.clojure/clojurescript {:mvn/version "1.11.60"}}}
@@ -12,13 +12,13 @@
 
            :chui
            {:extra-deps  {lambdaisland/chui    {:local/root "../chui"}
-                          thheller/shadow-cljs {:mvn/version "2.20.1"}
+                          thheller/shadow-cljs {:mvn/version "2.20.12"}
                           garden/garden        {:mvn/version "1.3.10"}}
             :extra-paths ["../chui/resources" "../chui/dev"]}
 
            :test
            {:extra-paths ["test"]
-            :extra-deps {lambdaisland/kaocha       {:mvn/version "1.70.1086"}
+            :extra-deps {lambdaisland/kaocha       {:mvn/version "1.71.1119"}
                          com.lambdaisland/kaocha-cljs  {:mvn/version "1.4.130"}
                          org.clojure/clojurescript {:mvn/version "1.11.60"}
                          org.clojure/test.check    {:mvn/version "1.1.1"}}}}}

@@ -19,3 +19,4 @@ resources/public/ui
 test
 resources/public/
 .store
+package-lock.json
