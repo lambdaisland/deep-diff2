@@ -88,28 +88,73 @@ For fine grained control you can create a custom Puget printer, and supply it to
 
 For more advanced uses like incorporating diffs into your own Fipp documents, see `lambdaisland.deep-diff2.printer/format-doc`, `lambdaisland.deep-diff2.printer/print-doc`.
 
-You can register print handlers for new types using
-`lambdaisland.deep-diff2.printer/register-print-handler!`, or by passing and
+### Print handlers for custom or built-in types
+
+In recent versions deep-diff2 initializes its internal copy of Puget with
+`{:print-fallback :print}`, meaning it will fall back to using the system
+printer, which you can extend by extending the `print-method` multimethod.
+
+This also means that we automatically pick up additional handlers installed by
+libraries, such as [time-literals](https://github.com/henryw374/time-literals).
+
+You can also register print handlers for deep-diff2 specifically by using
+`lambdaisland.deep-diff2.printer-impl/register-print-handler!`, or by passing an
 `:extra-handlers` map to `printer`.
 
-Note: the default printer is initialized as `(ddiff/printer {:print-fallback :print})` so that it will fall back to system printer when there is no match.
+If you are dealing with printing of custom types you might find that there are
+multiple print implementations you need to keep up-to-date, see
+[lambdaisland.data-printers](https://github.com/lambdaisland/data-printers) for
+a high-level API that can work with all the commonly used print implementations.
+
+#### Example of a custom type
+
+See [repl_sessions/custom_type.clj](repl_sessions/custom_type.clj) for the full
+code and results.
+
+```clj
+(deftype Degrees [amount unit]
+  Object
+  (equals [this that]
+    (and (instance? Degrees that)
+         (= amount (.-amount that))
+         (= unit (.-unit that)))))
+
+;; Using system handler fallback
+(defmethod print-method Degrees [degrees out]
+  (.write out (str (.-amount degrees) "°" (.-unit degrees))))
+  
+;; OR Using a Puget-specific handler
+(lambdaisland.deep-diff2.printer-impl/register-print-handler!
+ `Degrees
+ (fn [printer value]
+   [:span
+    (lambdaisland.deep-diff2.puget.color/document printer :number (str (.-amount value)))
+    (lambdaisland.deep-diff2.puget.color/document printer :tag "°")
+    (lambdaisland.deep-diff2.puget.color/document printer :keyword (str (.-unit value)))]))
+```
 
 ### Time, data literal
 
-One of the creative ways of using deep-diff is to diff two time data.
+A common use case is diffing and printing Java date and time objects
+(`java.util.Date`, `java.time.*`, `java.sql.Date|Time|DateTime`).
 
-```
+Chances are you already have print handlers (and data readers) set up for these
+via the [time-literals](https://github.com/henryw374/time-literals) library
+(perhaps indirectly by pulling in [tick](https://github.com/juxt/tick). In that
+case these should _just work_.
+
+```clj
 (ddiff/diff #inst "2019-04-09T14:57:46.128-00:00"
             #inst "2019-04-10T14:57:46.128-00:00")
 ```
 or
-```
+```clj
 (import '[java.sql Timestamp])
 (ddiff/diff (Timestamp. 0)
             (doto (Timestamp. 1000) (.setNanos 101)))
 ```
 
-If you need to diff a rich set of time literal, using [time-literals](https://github.com/henryw374/time-literals) is probably a good choice. 
+If you need to diff a rich set of time literal, using
 
 ```
 (require '[time-literals.read-write])
@@ -124,6 +169,13 @@ The original deep-diff only worked on Clojure, not ClojureScript. In porting the
 code to CLJC we were forced to make some breaking changes. To not break existing
 consumers we decided to move both the namespaces and the released artifact to
 new names, so the old and new deep-diff can exist side by side.
+
+We also had to fork Puget to make it cljc compatible. This required breaking
+changes as well, making it unlikely these changes will make it upstream, so
+instead we vendor our own copy of Puget under `lambdaisland.deep-diff2.puget.*`.
+This does mean we don't automatically pick up custom Puget print handlers,
+unless they are *also* registered with our own copy of Puget. See above for more
+info on that.
 
 When starting new projects you should use `lambdaisland/deep-diff2`. However if
 you have existing code that uses `lambdaisland/deep-diff` and you don't need the
