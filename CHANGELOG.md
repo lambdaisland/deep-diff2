@@ -1,12 +1,8 @@
 # Unreleased
 
-## Added
-
-## Fixed
-
 ## Changed
 
-- [breaking] Change the default setting of the pretty-print printer to system printer.
+- [breaking] Fall back to the system printer when no deep-diff2 specific print handler is available for a given type. See the README for details.
 
 # 2.4.138 (2022-09-01 / 6196130)
 
