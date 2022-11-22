@@ -20,3 +20,4 @@ test
 resources/public/
 .store
 package-lock.json
+.cache

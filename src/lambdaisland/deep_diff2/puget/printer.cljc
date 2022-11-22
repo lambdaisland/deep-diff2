@@ -319,14 +319,16 @@
             (doto (.setTimeZone (java.util.TimeZone/getTimeZone "GMT")))
             (.format ^java.util.Date %)))
 
-      java.util.GregorianCalendar
-      (tagged-handler
-       'inst
-       #(let [formatted (format "%1$tFT%1$tT.%1$tL%1$tz" %)
-              offset-minutes (- (.length formatted) 2)]
-          (str (subs formatted 0 offset-minutes)
-               ":"
-               (subs formatted offset-minutes))))
+      #?@(:bb []
+          :clj
+          [java.util.GregorianCalendar
+           (tagged-handler
+            'inst
+            #(let [formatted (format "%1$tFT%1$tT.%1$tL%1$tz" %)
+                   offset-minutes (- (.length formatted) 2)]
+               (str (subs formatted 0 offset-minutes)
+                    ":"
+                    (subs formatted offset-minutes))))])
 
       java.sql.Timestamp
       (tagged-handler
