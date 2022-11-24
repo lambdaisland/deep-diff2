@@ -296,46 +296,45 @@
   "Map of print handlers for Java/JavaScript types. This supports syntax for regular
   expressions, dates, UUIDs, and futures."
   #?(:clj
-     {java.lang.Class
-      (fn class-handler
-        [printer value]
-        (format-unknown printer value "Class" (get-type-name value)))
+     (->
+      {java.lang.Class
+       (fn class-handler
+         [printer value]
+         (format-unknown printer value "Class" (get-type-name value)))
 
-      java.util.concurrent.Future
-      (fn future-handler
-        [printer value]
-        (let [doc (if (future-done? promise)
-                    (format-doc printer @value)
-                    (color/document printer :nil "pending"))]
-          (format-unknown printer value "Future" doc)))
+       java.util.concurrent.Future
+       (fn future-handler
+         [printer value]
+         (let [doc (if (future-done? promise)
+                     (format-doc printer @value)
+                     (color/document printer :nil "pending"))]
+           (format-unknown printer value "Future" doc)))
 
-      java.util.UUID
-      (tagged-handler 'uuid str)
+       java.util.UUID
+       (tagged-handler 'uuid str)
 
-      java.util.Date
-      (tagged-handler
-       'inst
-       #(-> (java.text.SimpleDateFormat. inst-pattern)
-            (doto (.setTimeZone (java.util.TimeZone/getTimeZone "GMT")))
-            (.format ^java.util.Date %)))
+       java.util.Date
+       (tagged-handler
+        'inst
+        #(-> (java.text.SimpleDateFormat. inst-pattern)
+             (doto (.setTimeZone (java.util.TimeZone/getTimeZone "GMT")))
+             (.format ^java.util.Date %)))
 
-      #?@(:bb []
-          :clj
-          [java.util.GregorianCalendar
-           (tagged-handler
-            'inst
-            #(let [formatted (format "%1$tFT%1$tT.%1$tL%1$tz" %)
-                   offset-minutes (- (.length formatted) 2)]
-               (str (subs formatted 0 offset-minutes)
-                    ":"
-                    (subs formatted offset-minutes))))])
-
-      java.sql.Timestamp
-      (tagged-handler
-       'inst
-       (fn [ts]
-         (str (.format ^SimpleDateFormat (utc-timestamp-format) ts)
-              (format ".%09d-00:00" (.getNanos ^Timestamp ts)))))}
+       java.sql.Timestamp
+       (tagged-handler
+        'inst
+        (fn [ts]
+          (str (.format ^SimpleDateFormat (utc-timestamp-format) ts)
+               (format ".%09d-00:00" (.getNanos ^Timestamp ts)))))}
+      #?(:bb identity
+         :clj (assoc java.util.GregorianCalendar
+                     (tagged-handler
+                      'inst
+                      #(let [formatted (format "%1$tFT%1$tT.%1$tL%1$tz" %)
+                             offset-minutes (- (.length formatted) 2)]
+                         (str (subs formatted 0 offset-minutes)
+                              ":"
+                              (subs formatted offset-minutes)))))))
 
      :cljs
      {inst?

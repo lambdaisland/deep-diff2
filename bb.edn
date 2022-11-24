@@ -10,6 +10,6 @@
            :task (exec 'lambdaisland.deep-diff2.runner/run-tests)}
   npm-ws (when-not (fs/exists? "node_modules/ws")
            (shell "npm install ws"))
-  test:clj {:doc "Run kaocha tests"
-            :depends [npm-ws]
-            :task (apply clojure "-M:dev:test -m kaocha.runner" *command-line-args*)}}}
+  test:kaocha {:doc "Run kaocha tests"
+               :depends [npm-ws]
+               :task (apply clojure "-M:dev:test -m kaocha.runner" *command-line-args*)}}}
