@@ -103,7 +103,9 @@
   the class of the object. For ClojureScript, gets either the `name` attribute
   or the protocol name if the `name` attribute doesn't exist."
   [x]
-  #?(:clj
+  #?(:bb
+     (symbol (str (type x)))
+     :clj
      (symbol (.getName (class x)))
      :cljs
      (let [t (type x)
