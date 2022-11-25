@@ -4,6 +4,8 @@
 
 ## Fixed
 
+- Babashka compatibility
+
 ## Changed
 
 # 2.5.151 (2022-11-21 / 92232a1)
