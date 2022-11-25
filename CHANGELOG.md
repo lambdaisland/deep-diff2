@@ -2,6 +2,8 @@
 
 ## Added
 
+- Enable print tests in babashka
+
 ## Fixed
 
 ## Changed
