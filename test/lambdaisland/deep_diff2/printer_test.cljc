@@ -5,8 +5,10 @@
   #?(:clj
      (:import (java.sql Timestamp)
               (java.util Date
-                         GregorianCalendar
                          TimeZone))))
+
+#?(:bb nil ;; GregorianCalender not included in favor of java.time
+   :clj (import '[java.util GregorianCalendar]))
 
 (defn- printed
   [diff]
@@ -14,7 +16,8 @@
     (with-out-str (-> diff
                       (printer/format-doc printer)
                       (printer/print-doc printer)))))
-#?(:clj
+#?(:bb nil
+   :clj
    (defn- calendar
      [date]
      (doto (GregorianCalendar. (TimeZone/getTimeZone "GMT"))
@@ -26,13 +29,15 @@
            (printed (diff/diff #inst "2019-04-09T14:57:46.128-00:00"
                                #inst "2019-04-10T14:57:46.128-00:00")))))
 
-  #?(:clj
+  #?(:bb nil ;; bb TimeStamp constructor not included as of 1.0.166
+     :clj
      (testing "timestamp"
        (is (= "\u001B[31m-#inst \"1970-01-01T00:00:00.000000000-00:00\"\u001B[0m \u001B[32m+#inst \"1970-01-01T00:00:01.000000101-00:00\"\u001B[0m\n"
               (printed (diff/diff (Timestamp. 0)
                                   (doto (Timestamp. 1000) (.setNanos 101))))))))
 
-  #?(:clj
+  #?(:bb nil
+     :clj
      (testing "calendar"
        (is (= "\u001B[31m-#inst \"1970-01-01T00:00:00.000+00:00\"\u001B[0m \u001B[32m+#inst \"1970-01-01T00:00:01.001+00:00\"\u001B[0m\n"
               (printed (diff/diff (calendar (Date. 0)) (calendar (Date. 1001))))))))

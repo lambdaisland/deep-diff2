@@ -4,7 +4,7 @@
 
 (defn run-tests [_]
   (let [test-nss '[lambdaisland.deep-diff2.diff-test
-                   #_lambdaisland.deep-diff2.printer-test
+                   lambdaisland.deep-diff2.printer-test
                    lambdaisland.deep-diff2.puget-test]]
     (doseq [test-ns test-nss]
       (require test-ns))
