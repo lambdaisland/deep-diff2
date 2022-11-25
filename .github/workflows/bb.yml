@@ -49,6 +49,4 @@ jobs:
 
       - name: Execute bb tests
         run: |
-          bb --version
-          bb -e '(babashka.classpath/get-classpath)'
           bb test:bb
