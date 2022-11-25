@@ -7,9 +7,4 @@
            :extra-paths ["src" "test"]
            :extra-deps {current/project {:local/root "."}
                         org.clojure/test.check    {:mvn/version "1.1.1"}}
-           :task (exec 'lambdaisland.deep-diff2.runner/run-tests)}
-  npm-ws (when-not (fs/exists? "node_modules/ws")
-           (shell "npm install ws"))
-  test:kaocha {:doc "Run kaocha tests"
-               :depends [npm-ws]
-               :task (apply clojure "-M:dev:test -m kaocha.runner" *command-line-args*)}}}
+           :task (exec 'lambdaisland.deep-diff2.runner/run-tests)}}}
