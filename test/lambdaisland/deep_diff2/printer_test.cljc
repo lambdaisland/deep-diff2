@@ -1,7 +1,8 @@
 (ns lambdaisland.deep-diff2.printer-test
   (:require [clojure.test :refer [deftest testing is are]]
             [lambdaisland.deep-diff2.diff-impl :as diff]
-            [lambdaisland.deep-diff2.printer-impl :as printer])
+            [lambdaisland.deep-diff2.printer-impl :as printer]
+            [clojure.string :as str])
   #?(:clj
      (:import (java.sql Timestamp)
               (java.util Date
@@ -25,9 +26,10 @@
 
 (deftest print-doc-test
   (testing "date"
-    (is (= "\u001B[31m-#inst \"2019-04-09T14:57:46.128-00:00\"\u001B[0m \u001B[32m+#inst \"2019-04-10T14:57:46.128-00:00\"\u001B[0m\n"
-           (printed (diff/diff #inst "2019-04-09T14:57:46.128-00:00"
-                               #inst "2019-04-10T14:57:46.128-00:00")))))
+    (let [expected (str/replace "\u001B[31m-#inst \"2019-04-09T14:57:46.128-00:00\"\u001B[0m \u001B[32m+#inst \"2019-04-10T14:57:46.128-00:00\"\u001B[0m\n" "\r\n" "\n")]
+      (is (= expected
+             (printed (diff/diff #inst "2019-04-09T14:57:46.128-00:00"
+                                 #inst "2019-04-10T14:57:46.128-00:00"))))))
 
   #?(:bb nil ;; bb TimeStamp constructor not included as of 1.0.166
      :clj
