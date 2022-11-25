@@ -48,4 +48,7 @@ jobs:
           restore-keys: cljdeps-
 
       - name: Execute bb tests
-        run: bb test:bb
+        run: |
+          bb --version
+          bb -e '(babashka.classpath/get-classpath)'
+          bb test:bb
