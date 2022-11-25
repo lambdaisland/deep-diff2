@@ -26,10 +26,11 @@
 
 (deftest print-doc-test
   (testing "date"
-    (let [expected (str/replace "\u001B[31m-#inst \"2019-04-09T14:57:46.128-00:00\"\u001B[0m \u001B[32m+#inst \"2019-04-10T14:57:46.128-00:00\"\u001B[0m\n" "\r\n" "\n")]
+    (let [expected "\u001B[31m-#inst \"2019-04-09T14:57:46.128-00:00\"\u001B[0m \u001B[32m+#inst \"2019-04-10T14:57:46.128-00:00\"\u001B[0m\n"]
       (is (= expected
-             (printed (diff/diff #inst "2019-04-09T14:57:46.128-00:00"
-                                 #inst "2019-04-10T14:57:46.128-00:00"))))))
+             (str/replace (printed (diff/diff #inst "2019-04-09T14:57:46.128-00:00"
+                                              #inst "2019-04-10T14:57:46.128-00:00"))
+                          "\r\n" "\n")))))
 
   #?(:bb nil ;; bb TimeStamp constructor not included as of 1.0.166
      :clj
