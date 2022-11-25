@@ -1,3 +1,11 @@
+# Unreleased
+
+## Added
+
+## Fixed
+
+## Changed
+
 # 2.6.166 (2022-11-25 / 06fec7e)
 
 ## Fixed
