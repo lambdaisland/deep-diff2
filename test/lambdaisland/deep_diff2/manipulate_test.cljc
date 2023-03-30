@@ -70,11 +70,10 @@
              [])))))
 
 ;; "diff itself and remove-unchanged yields empty"
-(comment
- (defspec diff-itself 100
-  (prop/for-all [x diff-test/gen-any-except-NaN]
-                (if (coll? x)
-                  (= (manipulate/remove-unchanged (ddiff/diff x x))
-                     (empty x))
-                  (= (manipulate/remove-unchanged (ddiff/diff x x))
-                     nil)))))
+(defspec diff-itself 100
+  (prop/for-all
+   [x diff-test/gen-any-except-NaN]
+   (if (coll? x)
+     (= (manipulate/remove-unchanged (ddiff/diff x x))
+        (empty x))
+     (nil? (manipulate/remove-unchanged (ddiff/diff x x))))))

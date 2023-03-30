@@ -212,10 +212,16 @@
                          (gen/such-that (complement NaN?) gen/simple-type)))
 
 (defspec round-trip-diff 100
-  (prop/for-all [x gen-any-except-NaN
-                 y gen-any-except-NaN]
-    (let [diff (diff/diff x y)]
-      (= [x y] [(diff/left-undiff diff) (diff/right-undiff diff)]))))
+  (prop/for-all
+   [x gen-any-except-NaN
+    y gen-any-except-NaN]
+   (let [diff (diff/diff x y)]
+     (= [x y] [(diff/left-undiff diff) (diff/right-undiff diff)]))))
+
+(defspec diff-same-is-same 100
+  (prop/for-all
+   [x gen-any-except-NaN]
+   (= x (diff/diff x x))))
 
 (deftest diff-seq-test
   (is (= [(diff/->Insertion 1) 2 (diff/->Insertion 3)]
