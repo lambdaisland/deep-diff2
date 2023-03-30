@@ -97,11 +97,31 @@
          (diff-seq-insertions ins)
          (into []))))
 
+(defn diff-set [exp act]
+  (into
+   (into #{}
+         (map (fn [e]
+                (if (contains? act e)
+                  e
+                  (->Deletion e))))
+         exp)
+   (map ->Insertion)
+   (remove #(contains? exp %) act)))
+
+(let [exp {false 0, 0 0}
+      act {false 0, 0 0}
+      exp-ks (keys exp)
+      act-ks (concat (filter #(contains? (set (keys act)) %) exp-ks)
+                     (remove #(contains? (set exp-ks) %) (keys act)))
+      [del ins] (del+ins exp-ks act-ks)]
+  [del ins])
+(del+ins [0 false] [0 false])
+
 (defn diff-map [exp act]
   (first
    (let [exp-ks (keys exp)
-         act-ks (concat (filter (set (keys act)) exp-ks)
-                        (remove (set exp-ks) (keys act)))
+         act-ks (concat (filter #(contains? (set (keys act)) %) exp-ks)
+                        (remove #(contains? (set exp-ks) %) (keys act)))
          [del ins] (del+ins exp-ks act-ks)]
      (reduce
       (fn [[m idx] k]
@@ -162,10 +182,7 @@
 (extend-protocol Diff
   #?(:clj java.util.Set :cljs cljs.core/PersistentHashSet)
   (-diff-similar [exp act]
-    (let [exp-seq (seq exp)
-          act-seq (seq act)]
-      (set (diff-seq exp-seq (concat (filter act exp-seq)
-                                     (remove exp act-seq))))))
+    (diff-set exp act))
   #?@(:clj
       [java.util.List
        (-diff-similar [exp act] (diff-seq exp act))

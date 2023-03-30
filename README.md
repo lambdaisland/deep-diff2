@@ -88,6 +88,21 @@ For fine grained control you can create a custom Puget printer, and supply it to
 
 For more advanced uses like incorporating diffs into your own Fipp documents, see `lambdaisland.deep-diff2.printer/format-doc`, `lambdaisland.deep-diff2.printer/print-doc`.
 
+### Minimizing
+
+If you are only interested in the changes, and not in any values that haven't
+changed, then you can use `ddiff/minimize` to return a more compact diff.
+
+This is especially useful for potentially large nested data structures, for
+example a JSON response coming from a web service.
+
+```clj
+(-> (ddiff/diff {:a "apple" :b "pear"} {:a "apple" :b "banana"})
+    ddiff/minimize
+    ddiff/pretty-print)
+;; {:b -"pear" +"banana"}
+```
+
 ### Print handlers for custom or built-in types
 
 In recent versions deep-diff2 initializes its internal copy of Puget with

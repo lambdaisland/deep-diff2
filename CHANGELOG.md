@@ -3,6 +3,8 @@
 ## Added
 
 - Enable print tests in babashka
+- Add a `lambdaisland.deep-diff2/minimize` function, which removes any items
+  that haven't changed from the diff.
 
 ## Fixed
 

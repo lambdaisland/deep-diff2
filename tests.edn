@@ -1,4 +1,6 @@
 #kaocha/v1
 {:tests [{:id :clj}
          {:id :cljs
-          :type :kaocha.type/cljs}]}
+          :type :kaocha.type/cljs}]
+ :kaocha/bindings {kaocha.stacktrace/*stacktrace-filters* []}
+ }
