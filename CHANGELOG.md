@@ -3,7 +3,7 @@
 ## Added
 
 - Enable print tests in babashka
-- Add namespace `lambdaisland.deep-diff2.strip` ns with `remove-unchanged` API
+- Add namespace `lambdaisland.deep-diff2.manipulate` ns with `remove-unchanged` API
 
 ## Fixed
 
