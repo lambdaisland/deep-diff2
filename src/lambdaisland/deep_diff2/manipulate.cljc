@@ -1,4 +1,4 @@
-(ns lambdaisland.deep-diff2.strip
+(ns lambdaisland.deep-diff2.manipulate
   "Provide API for manipulate the diff structure data "
   (:require [clojure.walk :refer [postwalk]]
             #?(:clj [lambdaisland.deep-diff2.diff-impl]
