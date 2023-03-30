@@ -28,14 +28,21 @@
 (defn remove-unchanged
   "Postwalk diff, removing values that are unchanged"
   [diff]
-  (postwalk
-   (fn [x]
-     (cond
-       (map-entry? x) (when ;; Either k or v of a map-entry contains/is? diff-item,
-                            ;; keep the map-entry. Otherwise, remove it.
-                       (or (diff-item? (key x))
-                           (has-diff-item? (val x)))
-                        x)
-       :else          x))
-   diff))
+  (let [y (postwalk
+           (fn [x]
+             (cond
+               (map-entry? x) (when
+                              ;; Either k or v of a map-entry contains/is? diff-item,
+                              ;; keep the map-entry. Otherwise, remove it.
+                               (or (diff-item? (key x))
+                                   (has-diff-item? (val x)))
+                                x)
+               (or (set? x) (sequential? x)) (into (empty x) (filter #(or (diff-item? %)
+                                                                          (has-diff-item? %))  x))
+               :else          (do
+                                x)))
+           diff)]
+    (cond
+      (coll? y) y
+      :else     nil)))
 
