@@ -1,6 +1,8 @@
 (ns lambdaisland.deep-diff2
-  (:require [lambdaisland.deep-diff2.diff-impl :as diff-impl]
-            [lambdaisland.deep-diff2.printer-impl :as printer-impl]))
+  (:require
+   [lambdaisland.deep-diff2.diff-impl :as diff-impl]
+   [lambdaisland.deep-diff2.printer-impl :as printer-impl]
+   [lambdaisland.deep-diff2.minimize-impl :as minimize]))
 
 (defn diff
   "Compare two values recursively.
@@ -41,3 +43,8 @@
    (-> diff
        (printer-impl/format-doc printer)
        (printer-impl/print-doc printer))))
+
+(defn minimize
+  "Return a minimal diff, removing any values that haven't changed."
+  [diff]
+  (minimize/minimize diff))

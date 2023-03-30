@@ -3,7 +3,8 @@
 ## Added
 
 - Enable print tests in babashka
-- Add namespace `lambdaisland.deep-diff2.manipulate` ns with `remove-unchanged` API
+- Add a `lambdaisland.deep-diff2/minimize` function, which removes any items
+  that haven't changed from the diff.
 
 ## Fixed
 
