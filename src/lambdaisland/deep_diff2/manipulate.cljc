@@ -31,13 +31,11 @@
   (postwalk
    (fn [x]
      (cond
-       (map-entry? x) (cond
-                        (diff-item? (key x)) (do
-                                               ;(println "cond 1, keep" x)
-                                               x)
-                        (has-diff-item? (val x)) (do
-                                                    ;(println "cond 2, keep" x)
-                                                   x))
+       (map-entry? x) (when ;; Either k or v of a map-entry contains/is? diff-item,
+                            ;; keep the map-entry. Otherwise, remove it.
+                       (or (diff-item? (key x))
+                           (has-diff-item? (val x)))
+                        x)
        :else          x))
    diff))
 
