@@ -148,6 +148,37 @@ code and results.
     (lambdaisland.deep-diff2.puget.color/document printer :keyword (str (.-unit value)))]))
 ```
 
+### Set up a custom print handler with different colors by utilizing Puget library
+
+Sometimes, we need to tune the colors because:
+
+- To ensure adequate contrast on a different background
+- To ensure readability by people who are colorblind
+- To match your editor or main diff tool's color scheme.
+
+#### Config of Puget
+
+Fortunately, the Puget library included in deep-diff2 already allows customization through a custom printer. 
+
+In the Puget libray, 8-bit scheme is expressed via `[:fg-256 5 n]` where n is between 0 and 255. We can combine foreground and background, for example, like so: `[:fg-256 5 226 :bg-256 5 56]`.
+
+24-bit scheme is expressed via `[:fg-256 2 r g b]` where r g b are each between 0 and 255. Foreground and background can be combined, for example: `[:fg-256 2 205 236 255 :bg-256 2 110 22 188]`.
+
+#### An example of customizing color
+
+For example, if we change the `:lambdaisland.deep-diff2.printer-impl/deletion` from `[:red]` to  `[:bg-256 5 13]`, the color code it outputs will change from `\u001b[31m` to `\u001b[48;5;13m`
+
+```
+user=> (use 'lambdaisland.deep-diff2)
+nil
+user=> (def color-printer (printer {:color-scheme {:lambdaisland.deep-diff2.printer-impl/deletion [:bg-256 5 13]}}))
+#'user/color-printer
+user=> (pretty-print (diff {:a 1} {:b 2}) color-printer)
+{+:b 2, -:a 1}
+```
+
+![screenshot showing color customization](color-scheme.png)
+
 ### Time, data literal
 
 A common use case is diffing and printing Java date and time objects
