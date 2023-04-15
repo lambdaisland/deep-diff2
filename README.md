@@ -177,6 +177,7 @@ user=> (pretty-print (diff {:a 1} {:b 2}) color-printer)
 {+:b 2, -:a 1}
 ```
 
+That results in the following highlighting:
 ![screenshot showing color customization](color-scheme.png)
 
 ### Time, data literal
