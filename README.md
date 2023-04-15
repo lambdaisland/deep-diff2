@@ -150,11 +150,11 @@ code and results.
 
 ### Set up a custom print handler with different colors by utilizing Puget library
 
-Sometimes, we need to tune the colors because:
+Sometimes, we need to tune the colors to:
 
-- To ensure adequate contrast on a different background
-- To ensure readability by people who are colorblind
-- To match your editor or main diff tool's color scheme.
+- Ensure adequate contrast on a different background.
+- Ensure readability by people who are colorblind.
+- Match your editor or main diff tool's color scheme.
 
 #### Config of Puget
 
