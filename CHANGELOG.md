@@ -2,6 +2,8 @@
 
 ## Added
 
+ - Add documentation for using a custom color scheme using custom data printers.
+
 ## Fixed
 
 ## Changed
