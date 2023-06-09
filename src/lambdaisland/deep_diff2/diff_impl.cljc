@@ -108,20 +108,10 @@
    (map ->Insertion)
    (remove #(contains? exp %) act)))
 
-(let [exp {false 0, 0 0}
-      act {false 0, 0 0}
-      exp-ks (keys exp)
-      act-ks (concat (filter #(contains? (set (keys act)) %) exp-ks)
-                     (remove #(contains? (set exp-ks) %) (keys act)))
-      [del ins] (del+ins exp-ks act-ks)]
-  [del ins])
-(del+ins [0 false] [0 false])
-
 (defn diff-map [exp act]
   (first
    (let [exp-ks (keys exp)
-         act-ks (concat (filter #(contains? (set (keys act)) %) exp-ks)
-                        (remove #(contains? (set exp-ks) %) (keys act)))
+         act-ks (keys act)
          [del ins] (del+ins exp-ks act-ks)]
      (reduce
       (fn [[m idx] k]
