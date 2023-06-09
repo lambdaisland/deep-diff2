@@ -6,7 +6,7 @@
 
 ## Fixed
 
-- Simplified internals when diffing maps for improved performance on many datasets.
+- Simplified internals when diffing maps for improved performance on many datasets. (Thanks [@latacora-paul](https://github.com/latacora-paul)!)
 
 ## Changed
 
