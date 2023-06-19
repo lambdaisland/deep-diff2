@@ -114,14 +114,12 @@
         act-ks (set (keys act))]
     (reduce
       (fn [m k]
-        (cond
-          (and (contains? exp-ks k) (not (contains? act-ks k)))
+        (case [(contains? exp-ks k) (contains? act-ks k)]
+          [true false]
           (assoc m (->Deletion k) (get exp k))
-
-          (and (contains? act-ks k) (not (contains? exp-ks k)))
+          [false true]
           (assoc m (->Insertion k) (get act k))
-
-          (and (contains? act-ks k) (contains? exp-ks k))
+          [true true]
           (assoc m k (diff (get exp k) (get act k)))))
       {}
       (set/union exp-ks act-ks))))
