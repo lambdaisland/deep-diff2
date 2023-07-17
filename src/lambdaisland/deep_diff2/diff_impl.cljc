@@ -120,7 +120,10 @@
           [false true]
           (assoc m (->Insertion k) (get act k))
           [true true]
-          (assoc m k (diff (get exp k) (get act k)))))
+          (assoc m k (diff (get exp k) (get act k)))
+          ; `[false false]` will never occur because `k` necessarily
+          ; originated from at least one of the two sets
+          ))
       {}
       (set/union exp-ks act-ks))))
 
