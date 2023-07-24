@@ -92,6 +92,15 @@
       (is (= {:a [1 (diff/->Deletion 2) 3]}
              (diff/diff {:a [1 2 3]} {:a [1 3]}))))
 
+    (testing "map key order doesn't impact diff result"
+      (is (= {:name (diff/->Mismatch "Alyysa P Hacker" "Alyssa P Hacker"), :age 40}
+
+             (diff/diff (array-map :name "Alyysa P Hacker" :age 40)
+                        (array-map :age 40 :name "Alyssa P Hacker"))
+
+             (diff/diff (array-map :age 40 :name "Alyysa P Hacker")
+                        (array-map :age 40 :name "Alyssa P Hacker")))))
+
     (testing "records"
       (is (= {:a (diff/->Mismatch 1 2)}
              (diff/diff (map->ARecord {:a 1}) (map->ARecord {:a 2}))))

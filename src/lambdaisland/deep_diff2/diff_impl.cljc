@@ -1,5 +1,6 @@
 (ns lambdaisland.deep-diff2.diff-impl
   (:require [clojure.data :as data]
+            [clojure.set :as set]
             [lambdaisland.clj-diff.core :as seq-diff]))
 
 (declare diff diff-similar)
@@ -109,26 +110,22 @@
    (remove #(contains? exp %) act)))
 
 (defn diff-map [exp act]
-  (first
-   (let [exp-ks (keys exp)
-         act-ks (keys act)
-         [del ins] (del+ins exp-ks act-ks)]
-     (reduce
-      (fn [[m idx] k]
-        [(cond-> m
-           (contains? del idx)
-           (assoc (->Deletion k) (get exp k))
-
-           (not (contains? del idx))
-           (assoc k (diff (get exp k) (get act k)))
-
-           (contains? ins idx)
-           (into (map (juxt ->Insertion (partial get act))) (get ins idx)))
-         (inc idx)])
-      [(if (contains? ins -1)
-         (into {} (map (juxt ->Insertion (partial get act))) (get ins -1))
-         {}) 0]
-      exp-ks))))
+  (let [exp-ks (set (keys exp))
+        act-ks (set (keys act))]
+    (reduce
+      (fn [m k]
+        (case [(contains? exp-ks k) (contains? act-ks k)]
+          [true false]
+          (assoc m (->Deletion k) (get exp k))
+          [false true]
+          (assoc m (->Insertion k) (get act k))
+          [true true]
+          (assoc m k (diff (get exp k) (get act k)))
+          ; `[false false]` will never occur because `k` necessarily
+          ; originated from at least one of the two sets
+          ))
+      {}
+      (set/union exp-ks act-ks))))
 
 (defn primitive? [x]
   (or (number? x) (string? x) (boolean? x) (inst? x) (keyword? x) (symbol? x)))

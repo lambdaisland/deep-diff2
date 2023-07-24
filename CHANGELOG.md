@@ -4,6 +4,8 @@
 
 ## Fixed
 
+Varying key order in maps should produce a consistent diff (#47)
+
 ## Changed
 
 # 2.9.202 (2023-06-09 / 35494a0)
