@@ -31,6 +31,9 @@
       (is (= []
              (diff/diff [] [])))
 
+      (is (= {:meta true}
+             (meta (diff/diff ^:meta [] ^:meta []))))
+
       (is (= [1 2 3]
              (diff/diff (into-array [1 2 3]) [1 2 3])))
 
@@ -68,6 +71,9 @@
       (is (= #{:a}
              (diff/diff #{:a} #{:a})))
 
+      (is (= {:meta true}
+             (meta (diff/diff ^:meta #{} ^:meta #{}))))
+
       (is (= #{(diff/->Insertion :a)}
              (diff/diff #{} #{:a})))
 
@@ -79,6 +85,9 @@
 
     (testing "maps"
       (is (= {} (diff/diff {} {})))
+
+      (is (= {:meta true}
+             (meta (diff/diff ^:meta {} ^:meta {}))))
 
       (is (= {:a (diff/->Mismatch 1 2)}
              (diff/diff {:a 1} {:a 2})))

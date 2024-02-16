@@ -3,7 +3,7 @@
             [clojure.set :as set]
             [lambdaisland.clj-diff.core :as seq-diff]))
 
-(declare diff diff-similar)
+(declare diff diff-similar diff-meta)
 
 (defrecord Mismatch [- +])
 (defrecord Deletion [-])
@@ -92,40 +92,50 @@
 
 (defn diff-seq [exp act]
   (let [[rep del ins] (replacements (del+ins exp act))]
-    (->> exp
-         (diff-seq-replacements rep)
-         (diff-seq-deletions del)
-         (diff-seq-insertions ins)
-         (into []))))
+    (with-meta
+      (->> exp
+           (diff-seq-replacements rep)
+           (diff-seq-deletions del)
+           (diff-seq-insertions ins)
+           (into []))
+      (diff-meta exp act))))
 
 (defn diff-set [exp act]
-  (into
-   (into #{}
-         (map (fn [e]
-                (if (contains? act e)
-                  e
-                  (->Deletion e))))
-         exp)
-   (map ->Insertion)
-   (remove #(contains? exp %) act)))
+  (with-meta
+    (into
+     (into #{}
+           (map (fn [e]
+                  (if (contains? act e)
+                    e
+                    (->Deletion e))))
+           exp)
+     (map ->Insertion)
+     (remove #(contains? exp %) act))
+    (diff-meta exp act)))
 
 (defn diff-map [exp act]
-  (let [exp-ks (set (keys exp))
-        act-ks (set (keys act))]
-    (reduce
-      (fn [m k]
-        (case [(contains? exp-ks k) (contains? act-ks k)]
-          [true false]
-          (assoc m (->Deletion k) (get exp k))
-          [false true]
-          (assoc m (->Insertion k) (get act k))
-          [true true]
-          (assoc m k (diff (get exp k) (get act k)))
+  (with-meta
+    (let [exp-ks (set (keys exp))
+          act-ks (set (keys act))]
+      (reduce
+       (fn [m k]
+         (case [(contains? exp-ks k) (contains? act-ks k)]
+           [true false]
+           (assoc m (->Deletion k) (get exp k))
+           [false true]
+           (assoc m (->Insertion k) (get act k))
+           [true true]
+           (assoc m k (diff (get exp k) (get act k)))
           ; `[false false]` will never occur because `k` necessarily
           ; originated from at least one of the two sets
-          ))
-      {}
-      (set/union exp-ks act-ks))))
+           ))
+       {}
+       (set/union exp-ks act-ks)))
+    (diff-meta exp act)))
+
+(defn diff-meta [exp act]
+  (when (or (meta exp) (meta act))
+    (diff-map (meta exp) (meta act))))
 
 (defn primitive? [x]
   (or (number? x) (string? x) (boolean? x) (inst? x) (keyword? x) (symbol? x)))

@@ -2,6 +2,8 @@
 
 ## Added
 
+- Diff / preserve metadata on collections
+
 ## Fixed
 
 Varying key order in maps should produce a consistent diff (#47)
