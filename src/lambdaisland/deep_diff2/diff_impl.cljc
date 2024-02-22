@@ -100,6 +100,17 @@
            (into []))
       (diff-meta exp act))))
 
+(defn diff-string [exp act]
+  (->>  (diff-seq exp act)
+       (map #(if (char? %) {:= %} %))
+       (partition-by (comp first keys))
+       (map (fn [[first-element :as coll]]
+              (let [head (first (keys first-element))
+                    contents (mapcat vals coll)]
+                {head (apply str contents) })
+              )))
+  )
+
 (defn diff-set [exp act]
   (with-meta
     (into
@@ -138,7 +149,7 @@
     (diff-map (meta exp) (meta act))))
 
 (defn primitive? [x]
-  (or (number? x) (string? x) (boolean? x) (inst? x) (keyword? x) (symbol? x)))
+  (or (number? x) (boolean? x) (inst? x) (keyword? x) (symbol? x)))
 
 (defn diff-atom [exp act]
   (if (= exp act)
@@ -158,23 +169,30 @@
    (defn array? [x]
      (and x (.isArray (class x)))))
 
-(defn diff [exp act]
-  (cond
-    (nil? exp)
-    (diff-atom exp act)
+(defn diff 
+  ([exp act]
+   (diff exp act {}))
+  ([exp act {:keys [diff-strings?] :as _opts}]
+   (cond
+     (nil? exp)
+     (diff-atom exp act)
 
-    (and (diffable? exp)
-         (= (data/equality-partition exp) (data/equality-partition act)))
-    (diff-similar exp act)
+     (and (diffable? exp)
+          (= (data/equality-partition exp) (data/equality-partition act)))
+     (diff-similar exp act)
 
-    (array? exp)
-    (diff-seq exp act)
+     (array? exp)
+     (diff-seq exp act)
 
-    (record? exp)
-    (diff-map exp act)
+     (record? exp)
+     (diff-map exp act)
 
-    :else
-    (diff-atom exp act)))
+     (and diff-strings?
+       (string? exp))
+     (diff-string exp act)
+
+     :else
+     (diff-atom exp act))))
 
 (extend-protocol Diff
   #?(:clj java.util.Set :cljs cljs.core/PersistentHashSet)
