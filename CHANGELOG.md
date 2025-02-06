@@ -1,10 +1,11 @@
 # Unreleased
 
-## Added
-
-## Fixed
-
 ## Changed
+
+- [BREAKING] Get smarter about diffing records, instead of simply diffing them
+  as maps. We now only recurse into records if the two compared values are both
+  records of the same type.
+- Bump dependencies: fipp, rrb-vector
 
 # 2.11.216 (2024-02-17 / e77c3bf)
 
@@ -14,7 +15,7 @@
 
 ## Fixed
 
-Varying key order in maps should produce a consistent diff (#47)
+- Varying key order in maps should produce a consistent diff (#47)
 
 ## Changed
 

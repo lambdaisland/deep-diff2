@@ -1,12 +1,14 @@
 (ns lambdaisland.deep-diff2.diff-test
-  (:require [clojure.test :refer [deftest testing is are]]
-            [clojure.test.check :as tc]
-            [clojure.test.check.clojure-test :refer [defspec]]
-            [clojure.test.check.generators :as gen]
-            [clojure.test.check.properties :as prop]
-            [lambdaisland.deep-diff2.diff-impl :as diff]))
+  (:require
+   [clojure.test :refer [deftest testing is are]]
+   [clojure.test.check :as tc]
+   [clojure.test.check.clojure-test :refer [defspec]]
+   [clojure.test.check.generators :as gen]
+   [clojure.test.check.properties :as prop]
+   [lambdaisland.deep-diff2.diff-impl :as diff]))
 
 (defrecord ARecord [])
+(defrecord BRecord [])
 
 (deftest diff-test
   (testing "diffing atoms"
@@ -111,12 +113,20 @@
                         (array-map :age 40 :name "Alyssa P Hacker")))))
 
     (testing "records"
-      (is (= {:a (diff/->Mismatch 1 2)}
+      (is (= (map->ARecord {:a (diff/->Mismatch 1 2)})
              (diff/diff (map->ARecord {:a 1}) (map->ARecord {:a 2}))))
-      (is (= {(diff/->Insertion :a) 1}
+      (is (= (map->ARecord {(diff/->Insertion :a) 1})
              (diff/diff (map->ARecord {}) (map->ARecord {:a 1}))))
-      (is (= {(diff/->Deletion :a) 1}
-             (diff/diff (map->ARecord {:a 1}) (map->ARecord {}))))))
+      (is (= (map->ARecord {(diff/->Deletion :a) 1})
+             (diff/diff (map->ARecord {:a 1})
+                        (map->ARecord {}))))
+      (is (= (diff/->Mismatch (map->ARecord {:a 1}) (map->BRecord {:a 1}))
+             (diff/diff (map->ARecord {:a 1})
+                        (map->BRecord {:a 1}))))
+      (is (= (diff/->Mismatch {:a 1} (map->ARecord {:a 1}))
+             (diff/diff {:a 1} (map->ARecord {:a 1}))))
+      (is (= (diff/->Mismatch (map->ARecord {:a 1}) {:a 1})
+             (diff/diff (map->ARecord {:a 1}) {:a 1})))))
 
   (is (= [{:x (diff/->Mismatch 1 2)}]
          (diff/diff [{:x 1}] [{:x 2}])))

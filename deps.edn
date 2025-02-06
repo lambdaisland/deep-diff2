@@ -1,6 +1,6 @@
 {:paths ["resources" "src"]
- :deps  {fipp/fipp                   {:mvn/version "0.6.26"}
-         org.clojure/core.rrb-vector {:mvn/version "0.1.2"}
+ :deps  {fipp/fipp                   {:mvn/version "0.6.27"}
+         org.clojure/core.rrb-vector {:mvn/version "0.2.0"}
          lambdaisland/clj-diff       {:mvn/version "1.4.78"}
          mvxcvi/arrangement          {:mvn/version "2.1.0"}}
 

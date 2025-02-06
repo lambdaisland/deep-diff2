@@ -114,24 +114,36 @@
     (diff-meta exp act)))
 
 (defn diff-map [exp act]
-  (with-meta
-    (let [exp-ks (set (keys exp))
-          act-ks (set (keys act))]
-      (reduce
-       (fn [m k]
-         (case [(contains? exp-ks k) (contains? act-ks k)]
-           [true false]
-           (assoc m (->Deletion k) (get exp k))
-           [false true]
-           (assoc m (->Insertion k) (get act k))
-           [true true]
-           (assoc m k (diff (get exp k) (get act k)))
-          ; `[false false]` will never occur because `k` necessarily
-          ; originated from at least one of the two sets
-           ))
-       {}
-       (set/union exp-ks act-ks)))
-    (diff-meta exp act)))
+  (if (not= (record? exp) (record? act))
+    ;; If one of them is a record, and the other one a plain map, that's a
+    ;; mismatch. The case where both of them are records, but of different
+    ;; types, is handled in [[diff]]
+    (->Mismatch exp act)
+    (with-meta
+      (let [exp-ks (set (keys exp))
+            act-ks (set (keys act))]
+        (reduce
+         (fn [m k]
+           (case [(contains? exp-ks k) (contains? act-ks k)]
+             [true false]
+             ;; The `dissoc` is only relevant for records, which at this point
+             ;; we are certain are of the same type. If the key is present in
+             ;; one and not in the other, we know it's an optional key (not part
+             ;; of the record base), and we can safely `dissoc` it while
+             ;; retaining the record type.
+             (assoc (dissoc m k) (->Deletion k) (get exp k))
+             [false true]
+             (assoc m (->Insertion k) (get act k))
+             [true true]
+             (assoc m k (diff (get exp k) (get act k)))
+             ;; `[false false]` will never occur because `k` necessarily
+             ;; originated from at least one of the two sets
+             ))
+         ;; In case of a record, we want to preserve the type, and you can't
+         ;; call `empty` on records, so we start from `exp` and assoc/dissoc.
+         (if (record? exp) exp {})
+         (set/union exp-ks act-ks)))
+      (diff-meta exp act))))
 
 (defn diff-meta [exp act]
   (when (or (meta exp) (meta act))
@@ -160,8 +172,18 @@
 
 (defn diff [exp act]
   (cond
+    (= exp act)
+    exp
+
     (nil? exp)
     (diff-atom exp act)
+
+    (record? exp)
+    (if (= (type exp) (type act))
+      (diff-map exp act)
+      ;; Either act is not a record, or it's a record of a different type, so
+      ;; that's a mismatch
+      (->Mismatch exp act))
 
     (and (diffable? exp)
          (= (data/equality-partition exp) (data/equality-partition act)))
@@ -169,9 +191,6 @@
 
     (array? exp)
     (diff-seq exp act)
-
-    (record? exp)
-    (diff-map exp act)
 
     :else
     (diff-atom exp act)))
