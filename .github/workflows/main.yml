@@ -1,0 +1,44 @@
+name: Continuous Delivery
+
+on: push
+
+jobs:
+  Kaocha:
+    runs-on: ${{matrix.sys.os}}
+
+    strategy:
+      matrix:
+        sys:
+          # - { os: macos-latest, shell: bash }
+          - { os: ubuntu-latest, shell: bash }
+          # - { os: windows-latest, shell: powershell }
+
+    defaults:
+      run:
+        shell: ${{matrix.sys.shell}}
+
+    steps:
+      - uses: actions/checkout@v2
+ 
+      - name: 🔧 Install java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '25'
+
+      - name: 🔧 Install clojure
+        uses: DeLaGuardo/setup-clojure@master
+        with:
+          cli: '1.12.3.1577'
+
+      - name: 🗝 maven cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.gitlibs
+          key: ${{ runner.os }}-maven-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: 🧪 Run tests
+        run: bin/kaocha

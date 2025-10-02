@@ -1,7 +1,7 @@
 {:deps
  {lambdaisland/deep-diff2 {:local/root "."}
   lambdaisland/open-source {:git/url "https://github.com/lambdaisland/open-source"
-                            :git/sha "0bd06e00f3b930d9a0fdd0ed90d47a9a333b19da"}}
+                            :git/sha "e0e234aea52aeafac6ebb06c4a5149d83977e6a0"}}
  :tasks
  {test:bb {:doc "Run babashka tests with custom runner"
            :extra-paths ["src" "test"]
