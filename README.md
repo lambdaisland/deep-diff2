@@ -1,7 +1,7 @@
 # lambdaisland/deep-diff2
 
 <!-- badges -->
-[![CircleCI](https://circleci.com/gh/lambdaisland/deep-diff2.svg?style=svg)](https://circleci.com/gh/lambdaisland/deep-diff2) [![cljdoc badge](https://cljdoc.org/badge/lambdaisland/deep-diff2)](https://cljdoc.org/d/lambdaisland/deep-diff2) [![Clojars Project](https://img.shields.io/clojars/v/lambdaisland/deep-diff2.svg)](https://clojars.org/lambdaisland/deep-diff2)
+[![GitHub Actions](https://github.com/lambdaisland/deep-diff2/actions/workflows/main.yml/badge.svg)](https://github.com/lambdaisland/deep-diff2/actions/workflows/main.yml) [![cljdoc badge](https://cljdoc.org/badge/lambdaisland/deep-diff2)](https://cljdoc.org/d/lambdaisland/deep-diff2) [![Clojars Project](https://img.shields.io/clojars/v/lambdaisland/deep-diff2.svg)](https://clojars.org/lambdaisland/deep-diff2)
 <!-- /badges -->
 
 Recursively compare Clojure or ClojureScript data structures, and produce a colorized diff of the result.
@@ -294,7 +294,7 @@ Another library that implements a form of data structure diffing is [editscript]
 <!-- license -->
 ## License
 
-Copyright &copy; 2018-2024 Arne Brasseur and contributors
+Copyright &copy; 2018-2025 Arne Brasseur and contributors
 
 Available under the terms of the Eclipse Public License 1.0, see LICENSE.txt
 <!-- /license -->
