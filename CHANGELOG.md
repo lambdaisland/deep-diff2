@@ -4,6 +4,8 @@
 
 ## Fixed
 
+- Fixed puget printer for futures
+
 ## Changed
 
 # 2.12.219 (2025-02-06 / 9e6942a)
