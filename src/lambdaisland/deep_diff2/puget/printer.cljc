@@ -305,7 +305,7 @@
        java.util.concurrent.Future
        (fn future-handler
          [printer value]
-         (let [doc (if (future-done? promise)
+         (let [doc (if (future-done? value)
                      (format-doc printer @value)
                      (color/document printer :nil "pending"))]
            (format-unknown printer value "Future" doc)))
