@@ -172,17 +172,16 @@ In the Puget libray, 8-bit scheme is expressed via `[:fg-256 5 n]` where n is be
 
 #### An example of customizing color
 
-For example, if we change the `:lambdaisland.deep-diff2.printer-impl/deletion` from `[:red]` to  `[:bg-256 5 13]`, the color code it outputs will change from `\u001b[31m` to `\u001b[48;5;13m`
+For example, if we change the `:lambdaisland.deep-diff2.printer-impl/deletion` from `[:red]` to  `[:bg-256 5 11]`, the color code it outputs will change from `\u001b[31m` to `\u001b[48;5;11m`
 
 ```
 user=> (use 'lambdaisland.deep-diff2)
 nil
-user=> (def color-printer (printer {:color-scheme {:lambdaisland.deep-diff2.printer-impl/deletion [:bg-256 5 13]}}))
+user=> (def color-printer (printer {:color-scheme {:lambdaisland.deep-diff2/deletion [:bg-256 5 11]}}))
 #'user/color-printer
 user=> (pretty-print (diff {:a 1} {:b 2}) color-printer)
 {+:b 2, -:a 1}
 ```
-
 That results in the following highlighting:
 ![screenshot showing color customization](color-scheme.png)
 

@@ -127,25 +127,37 @@
   [type handler]
   (swap! print-handlers assoc type handler))
 
+(defn- color-scheme-mapping
+  "Translates user-friendly keys to internal namespaced keys."
+  [colors]
+  (let [mapping {:lambdaisland.deep-diff2/deletion  ::deletion
+                 :lambdaisland.deep-diff2/insertion ::insertion
+                 :lambdaisland.deep-diff2/other     ::other}]
+    (reduce-kv (fn [m k v]
+                 (assoc m (get mapping k k) v)) ;; Fallback to original key if not in mapping
+               {}
+               colors)))
+
 (defn puget-printer
   ([]
    (puget-printer {}))
   ([opts]
-   (let [extra-handlers (:extra-handlers opts)]
-     (puget-printer/pretty-printer (merge {:width          (or *print-length* 100)
-                                           :print-color    true
-                                           :color-scheme   {::deletion  [:red]
-                                                            ::insertion [:green]
-                                                            ::other     [:yellow]
+   (let [opts (update opts :color-scheme color-scheme-mapping)
+         extra-handlers (:extra-handlers opts)]
+     (puget-printer/pretty-printer (puget-printer/merge-options {:width          (or *print-length* 100)
+                                                                 :print-color    true
+                                                                 :color-scheme   {::deletion  [:red]
+                                                                                  ::insertion [:green]
+                                                                                  ::other     [:yellow]
                                                             ;; lambdaisland.deep-diff2.puget uses green and red for
                                                             ;; boolean/tag, but we want to reserve
                                                             ;; those for diffed values.
-                                                            :boolean    [:bold :cyan]
-                                                            :tag        [:magenta]}
-                                           :print-handlers  (dispatch/chained-lookup
-                                                             (print-handler-resolver extra-handlers)
-                                                             puget-printer/common-handlers)}
-                                          (dissoc opts :extra-handlers))))))
+                                                                                  :boolean    [:bold :cyan]
+                                                                                  :tag        [:magenta]}
+                                                                 :print-handlers  (dispatch/chained-lookup
+                                                                                   (print-handler-resolver extra-handlers)
+                                                                                   puget-printer/common-handlers)}
+                                                                (dissoc opts :extra-handlers))))))
 
 (defn format-doc [expr printer]
   (puget-printer/format-doc printer expr))
