@@ -66,7 +66,7 @@
       (is (= [(diff/->Insertion []) {} (diff/->Insertion [])]
              (diff/diff [{}]  [[] {} []])))
 
-      (is (= [0 (diff/->Deletion 1) (diff/->Mismatch 2 :x) (diff/->Insertion :y) (diff/->Insertion :z)]
+      (is (= [0 (diff/->Mismatch 1 :x) (diff/->Mismatch 2 :y) (diff/->Insertion :z)]
              (diff/diff [0 1 2] [0 :x :y :z]))))
 
     (testing "sets"
@@ -167,7 +167,7 @@
   (is (= [#{1 2} {2 [:x :y :z]}]
          (diff/del+ins [0 1 2] [0 :x :y :z])))
 
-  (is (= [{2 :x} #{1} {2 '(:y :z)}]
+  (is (= [{1 :x, 2 :y} #{} {2 '(:z)}]
          (diff/replacements [#{1 2} {2 [:x :y :z]}])))
 
   (is (= [{} #{} {-1 [1], 1 [3], 3 [5]}]
@@ -303,6 +303,11 @@
 
   (is (= [:a (diff/->Deletion :b) :c (diff/->Insertion :d)]
          (diff/diff-seq [:a :b :c] [:a :c :d]))))
+
+(deftest diff-longer-second-seq-test
+  (testing "when second sequence is longer and has no common elements, replacements are paired correctly"
+    (is (= [{:a (diff/->Mismatch 1 2)} {:b (diff/->Mismatch 1 2)} (diff/->Insertion {:c 2})]
+           (diff/diff '({:a 1} {:b 1}) '({:a 2} {:b 2} {:c 2}))))))
 
 
 (comment
