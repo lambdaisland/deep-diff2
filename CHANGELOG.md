@@ -4,6 +4,7 @@
 
 ## Fixed
 
+- Fixed Fix replacements mispairing when second sequence is longer
 - Fixed puget printer for futures
 
 ## Changed
