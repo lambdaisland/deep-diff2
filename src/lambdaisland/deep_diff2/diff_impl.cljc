@@ -51,10 +51,18 @@
                      (dissoc (dec d))
                      (assoc d (seq (concat (next i)
                                            (get ins d))))))
-          (recur rep
-                 del
-                 (next del-rest)
-                 ins)))
+          (if-let [nearest (first (sort (filter #(> % d) (keys ins))))]
+            (if (and (every? del (range (inc d) (inc nearest)))
+                     (seq (get ins nearest)))
+              (let [i (get ins nearest)]
+                (recur (assoc rep d (first i))
+                       (disj del d)
+                       (next del-rest)
+                       (-> ins
+                           (dissoc nearest)
+                           (assoc d (seq (concat (next i) (get ins d)))))))
+              (recur rep del (next del-rest) ins))
+            (recur rep del (next del-rest) ins))))
       [rep del (into {}
                      (remove (comp nil? val))
                      (shift-insertions ins))])))
