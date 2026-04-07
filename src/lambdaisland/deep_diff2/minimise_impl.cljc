@@ -36,7 +36,7 @@
       #?(:clj
          (clojure.lang.MapEntry/create (key o) (minimise (val o)))
          :cljs
-         (MapEntry. (key o) (minimise (val o)))))
+         (MapEntry. (key o) (minimise (val o)) nil)))
 
     (record? o)
     (into o (map minimise) o)
