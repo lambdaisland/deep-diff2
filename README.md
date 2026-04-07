@@ -46,13 +46,13 @@ You can find an overview of all our different projects at [lambdaisland/open-sou
 deps.edn
 
 ```
-lambdaisland/deep-diff2 {:mvn/version "2.12.219"}
+lambdaisland/deep-diff2 {:mvn/version "2.13.231"}
 ```
 
 project.clj
 
 ```
-[lambdaisland/deep-diff2 "2.12.219"]
+[lambdaisland/deep-diff2 "2.13.231"]
 ```
 
 ## Use
