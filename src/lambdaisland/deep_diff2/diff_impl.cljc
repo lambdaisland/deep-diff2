@@ -1,7 +1,8 @@
 (ns lambdaisland.deep-diff2.diff-impl
-  (:require [clojure.data :as data]
-            [clojure.set :as set]
-            [lambdaisland.clj-diff.core :as seq-diff]))
+  (:require
+   [clojure.data :as data]
+   [clojure.set :as set]
+   [lambdaisland.clj-diff.core :as seq-diff]))
 
 (declare diff diff-similar diff-meta)
 

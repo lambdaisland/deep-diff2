@@ -1,12 +1,18 @@
 # Unreleased
 
-## Added
+## Changed
+
+- General dependency and tooling version bumps
 
 ## Fixed
 
 - Fixed puget printer for futures
 
 ## Changed
+
+- Fix `mimimize` when inserting/removing map keys (should preserve associated
+  value)
+- Add `minimise` variant
 
 # 2.12.219 (2025-02-06 / 9e6942a)
 

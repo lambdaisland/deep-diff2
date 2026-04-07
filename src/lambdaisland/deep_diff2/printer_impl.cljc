@@ -1,11 +1,12 @@
 (ns lambdaisland.deep-diff2.printer-impl
-  (:require [arrangement.core]
-            [fipp.engine :as fipp]
-            [lambdaisland.deep-diff2.diff-impl :as diff]
-            [lambdaisland.deep-diff2.puget.color :as color]
-            [lambdaisland.deep-diff2.puget.dispatch :as dispatch]
-            [lambdaisland.deep-diff2.puget.printer :as puget-printer]
-            #?(:cljs [goog.string :refer [format]]))
+  (:require
+   [arrangement.core]
+   [fipp.engine :as fipp]
+   [lambdaisland.deep-diff2.diff-impl :as diff]
+   [lambdaisland.deep-diff2.puget.color :as color]
+   [lambdaisland.deep-diff2.puget.dispatch :as dispatch]
+   [lambdaisland.deep-diff2.puget.printer :as puget-printer]
+   #?(:cljs [goog.string :refer [format]]))
   #?(:clj
      (:import)))
 
