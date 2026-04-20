@@ -1,10 +1,8 @@
 # Unreleased
 
-## Added
-
 ## Fixed
 
-## Changed
+- Address clojurescript warning
 
 # 2.13.231 (2026-04-07 / 8d35b69)
 
